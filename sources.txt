@@ -1,0 +1,2 @@
+blinking text:
+https://stackoverflow.com/questions/59505849/specific-blinking-on-p5js

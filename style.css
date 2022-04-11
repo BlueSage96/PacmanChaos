@@ -1,0 +1,155 @@
+*{
+    padding: 0;
+    margin: 0;
+}
+
+@font-face {
+    font-family: pacmanFont;
+    src: url("assets/crackman.TTF");
+}
+
+@font-face {
+    font-family: lot;
+    src: url("assets/lot.otf");
+}
+
+html{
+    font-family: pacmanFont;
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+  }
+  
+  body{
+    background-image: url("assets/background.jpg");
+    background-repeat: no-repeat;
+    overflow: hidden;
+  }
+
+  canvas {
+    display: block;
+  }
+
+  h1{
+      color: white;
+  }
+  
+
+  /*index.html*/
+  
+  .flexbox{
+      width: 100vw;
+      height: 80vh;
+      padding-bottom: 10px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+  }
+
+  #canvasdiv{
+      border: 2px solid white;
+      position: absolute;
+      top: 12vh;
+      left: 19.5vw;
+      background-color: black;
+  }
+
+  #infoBox{
+    font-size: 40px;
+    border: 2px solid white;
+    position: absolute;
+    top: 18vh;
+    left: 25vw;
+    color: white;
+    background-color: black;
+  }
+
+  #title,#instructions{
+      color: white;
+      font-size: 80px;
+      margin-left: 800px;
+      margin-top: 20px;
+  }
+
+  span{
+      background-color: black;
+      padding: 0 20px;
+  }
+
+  button{
+      font-family: pacmanFont;
+      font-size: 50px;
+      background-color: black;
+      color: white;
+      padding: 0;
+  }
+
+  #toggle{
+      position: absolute;
+      top: 25vh;
+      left: 0.6vw;
+      padding: 20px;
+  }
+
+  #kit{
+    position: absolute;
+    top: 45vh;
+    left: 3vw;
+    padding: 5px 0;
+}
+
+  #instructionsButton{
+      position: absolute;
+      top: 45vh;
+      left: 78.5vw;
+      padding: 5px 0;
+  }
+
+  #instructionsButton a, #back a, #original a, #kit a{
+      color: white;
+      text-decoration: none;
+      padding: 20px;
+  }
+
+  #instructionsButton a:hover, #back a:hover, #original a:hover, #toggle:hover, #kit a:hover{
+      color: yellow;
+      background-color: gray;
+  }
+
+  #back{
+     margin-left: 50px;
+     padding: 5px 0;
+  }
+
+  #original{
+    position: absolute;
+    top: 25vh;
+    left: 78.25vw;
+    padding: 5px 0;
+}
+
+/* #copyright{
+    background-color: black;
+    color: white;
+    float: left;
+    font-family: lot;
+    font-size: 35px;
+} */
+
+select#menu{
+    font-family: pacmanFont;
+    background-color: black;
+    color: white;
+    padding: 40px;
+    font-size: 30px;
+}
+
+#rights{
+    background-color: black;
+    color: white;
+    font-size: 40px;
+    padding-left: 50px;
+    margin-top: 30px;
+}
