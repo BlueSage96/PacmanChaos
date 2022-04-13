@@ -1,9 +1,11 @@
 let my,shared,pacmanFont;
 let marginVert,marginHori,col,row;
-let obstacles, borders;
+let obstacles, borders, ballCol;
+let path = [];
 let scene = 0;
-let size = 50;
+let size = 100;
 let spacing = 2;
+
 function preload(){
     partyConnect(
         "wss://deepstream-server-1.herokuapp.com",
@@ -24,16 +26,28 @@ function preload(){
 }
 
 function setup(){
-    var mainCanvas = createCanvas(1400,1000);
+    let mainCanvas = createCanvas(1400,1000);
     mainCanvas.parent("canvasdiv");
     let frameCount = frameRate(60);
     textFont(pacmanFont);
+    col = width / size;
+    row = height / size;
     marginVert = (width - col * size) / 2;
     marginHori = (height - row * size) / 2;
+    //change colors - or make them random
     obstacles = color(50,0,200);
-    borders = color(255,0,0);
+    borders = color(80,60,200);
+    ballCol = color(255);
 
-    //toggle server info
+    for(let i = 0; i < col; i++){
+        path[i] = [];
+       for(let j = 0; j < row; j++){
+          path[i][j] = [[col + 2][row + 2]];
+       }
+    }
+   
+
+        //toggle server info
     partyToggleInfo(false);
     toggle = document.getElementById('toggle');
 
@@ -46,13 +60,13 @@ function setup(){
         });
     }
 
-    //Make a select menu
+    // Make a select menu
     teamDropDownMenu = createSelect();
     teamDropDownMenu.option("Pacman");
     teamDropDownMenu.option("Blue Ghost");
     teamDropDownMenu.option("Red Ghost");
-    teamDropDownMenu.option("Pink Ghost");
-    teamDropDownMenu.option("Orange Ghost");
+    teamDropDownMenu.option("Green Ghost");
+    teamDropDownMenu.option("Purple Ghost");
     teamDropDownMenu.position(40,800);
     teamDropDownMenu.id("menu");
 
@@ -62,17 +76,17 @@ function setup(){
 }
 
 function draw(){
-   background(1);
-   switch(scene){
-       case 1:
-        maze();
-        game();
-        break;
-       default:
-        startScreen();
-        break;
+    background(1);
+    switch(scene){
+    case 1:
+      game();
+      break;
+    default:
+      startScreen();
+      break;
    }
 }
+
 
 function mousePressed(){
     if(scene == 0){
@@ -93,11 +107,8 @@ function waitForHost(){
 }
 
 function game(){
-
-   // background(0,255,0);
-   // text("Draw maze",500,500);
-    // maze();
-
+ maze();
+ tokens();
     // pacmanControls();
     // ghostControls();
     // chaosMode();
@@ -107,30 +118,43 @@ function gameOver(){
 
 }
 
+function pause(){
+
+}
+
+function death(){
+
+}
+
+function victory(){
+
+}
+
 function maze(){
     //boundaries
-    fill(255);
+    fill(0);
     stroke(borders);
     strokeWeight(spacing);
-    rect(marginHori,marginVert,width - 2 * marginHori, height - 2 * marginVert);
-    fill(255);
+    rect(marginHori + 25,marginVert + 15,1350, 975);//recalculate
+    fill(0);
     noStroke();
 
     //exits
     //left side
-    rect(9, centerY(6) - 25, 25, 50);
+    rect(9, centerY(6) - 25, 25, 70);
     stroke(borders);
     line(centerX(0),centerY(6) - 25, centerX(1) - 25, centerY(6) - 25);
-    line(centerX(0), centerY(6) + 25, centerX(1) - 25, centerY(6) + 25);
+    line(centerX(0), centerY(6) + 45, centerX(1) - 25, centerY(6) + 45);
 
     //right
     noStroke();
-    rect(centerX(col) + 10, centerY(6) - 25, 25, 50);
+    rect(centerX(col) + 10, centerY(6) - 25, 25, 70);
     stroke(borders);
-    line(centerX(col) + 25, centerY(6) + 25, centerX(col + 1), centerY(6) + 25);
+    line(centerX(col) + 25, centerY(6) + 45, centerX(col + 1), centerY(6) + 45);
     line(centerX(col) + 25, centerY(6) - 25, centerX(col + 1), centerY(6) - 25);
 
-   // Draw obstacles of the type: (column, row, width XX, length YY)
+    //change the walls!
+    // Draw obstacles of the type: (column, row, width XX, length YY)
     walls(2, 2, 1, 2);
     walls(2, 5, 2, 1);
     walls(2, 7, 1, 3);
@@ -167,16 +191,23 @@ function walls(x,y,numC,numR){
     rect(x0,y0,large,comp);
 }
 
-function pause(){
-
-}
-
-function death(){
-
-}
-
-function victory(){
-
+//discs around the maze
+function tokens(){
+  let cx,cy;
+ // ellipseMode(CENTER);
+  //fill(255);
+  noStroke();
+  for(let i = 1; i <= col; i++){
+    for(let j = 1; j <= row; j++){
+       cx = centerX(i);
+       cy = centerY(j);
+       path[j][i] = 2;//fix - draws a over the maze
+       if(path[j][i] == 2){
+            fill(ballCol);
+            ellipse(cx,cy,25,25);
+       }
+    }
+  }
 }
 
 function pacmanControls(){
@@ -191,8 +222,8 @@ function centerX(col){
     return marginHori + (col - 0.5) * size;
 }
 
-function centerY(row){
-    return marginVert + (row - 0.5) * size;
+function centerY(nLin){
+    return marginVert + (nLin - 0.5) * size;
 }
 
 function chaosMode(){
