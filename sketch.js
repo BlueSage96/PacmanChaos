@@ -5,6 +5,14 @@ let path = [];
 let scene = 0;
 let size = 100;
 let spacing = 2;
+let vel = 1;
+let speed,invert;
+let pacman;
+let direction = "";
+let px,py, red_px,red_py,blue_px,blue_py,green_px,green_py,purple_px,purple_py, 
+vx,vy,red_vx, red_vy, blue_vx, blue_vy, green_vx, green_vy, purple_vx, purple_vy;//x & y velocity
+let green_pathCount, purple_pathCount;
+
 
 function preload(){
     partyConnect(
@@ -20,7 +28,8 @@ function preload(){
 
 
      //sprites
-
+    //pacman = loadImage("https://brittlizprice.com/wp-content/uploads/2022/04/Pacman.gif");
+    pacman = loadImage("assets/Pacman.gif");
      //Font
      pacmanFont = loadFont("assets/crackman.TTF");
 }
@@ -38,6 +47,41 @@ function setup(){
     obstacles = color(50,0,200);
     borders = color(80,60,200);
     ballCol = color(255);
+
+    speed = false;
+    invert = false;
+
+    //initialize pacman
+    px = centerX(9);
+    py = centerY(5);
+    vx = 0;
+    vy = 0;
+
+    //red ghost
+    red_px = centerX(9);
+    red_py = centerY(1);
+    red_vx = 0;
+    red_vy = 0;
+
+    //blue ghost
+    blue_px = centerX(7);
+    blue_py = centerY(5);
+    blue_vx = 0;
+    blue_vy = 0;
+
+    //green ghost
+    green_px = centerX(3);
+    green_py = centerY(4);
+    green_vx = 0;
+    green_vy = 0;
+    green_pathCount = 0;
+
+    //purple ghost
+    purple_px = centerX(col);
+    purple_py = centerY(7);
+    purple_vx = 0;
+    purple_vy = 0;
+    purple_pathCount = 0;
 
     for(let i = 0; i < col; i++){
         path[i] = [];
@@ -77,6 +121,7 @@ function setup(){
 
 function draw(){
     background(1);
+  //  image(pacman,300,300,200,100);
     switch(scene){
     case 1:
       game();
@@ -107,9 +152,9 @@ function waitForHost(){
 }
 
 function game(){
- maze();
- tokens();
-    // pacmanControls();
+    maze();
+    tokens();
+    pacmanControls();
     // ghostControls();
     // chaosMode();
 }
@@ -201,7 +246,7 @@ function tokens(){
     for(let j = 1; j <= row; j++){
        cx = centerX(i);
        cy = centerY(j);
-       path[j][i] = 2;//fix - draws a over the maze
+       path[j][i] = 2;//fix - draws all over the maze
        if(path[j][i] == 2){
             fill(ballCol);
             ellipse(cx,cy,25,25);
@@ -210,20 +255,113 @@ function tokens(){
   }
 }
 
-function pacmanControls(){
-
-}
-
-function ghostControls(){
-
-}
-
 function centerX(col){
     return marginHori + (col - 0.5) * size;
 }
 
 function centerY(nLin){
     return marginVert + (nLin - 0.5) * size;
+}
+
+//may cause issues later
+function positionX(px){
+    return (int)(((px - marginHori) / size) + 0.5);
+}
+
+function positionY(py){
+  return (int)(((py - marginVert) / size) + 0.5);
+}
+
+function turnRight(){
+  if(path[positionY(py)][positionX(px) + 1] != 0){
+      return true;
+  }
+  else{
+      return false;
+  }
+}
+
+function turnLeft(){
+    for(let j = 1; j <= row; j++){
+        for(let i = 1; i <= col; i++){
+            if(px == centerX(i) && py == centerY(j)){
+                if(get(centerX(i-1),(centerY(j) == obstacles  || px <= centerX(1) && (j != 6)))){
+                    return false;
+                }
+            }
+        }
+    }
+    return true;
+}
+
+function keyPressed(){
+ //right
+  if(keyCode == 39){
+    for(let i = 1; i < row + 1; i++){
+        if(py == centerY(i) && turnRight()){
+            vx = vel;
+            vy = 0;
+            direction = "right";
+        }
+    }
+    console.log("Right arrow pressed");
+  }
+
+  //left
+  if(keyCode == 37){
+    for(let i = 1; i < row + 1; i++){
+        if(py == centerY(i) && turnLeft()){
+            vx = -vel;
+            vy = 0;
+            direction = "left";
+        }
+    }
+    console.log("Left arrow pressed");
+  }
+
+  //up
+  if(keyCode == 38){
+     
+  }
+
+  //down
+  if(keyCode == 40){
+
+  }
+//    switch(keyCode){
+//        case RIGHT:
+//         for(let i = 1; i < row + 1; i++){
+//             if(py == centerY(i) && turnRight()){
+//                 vx = vel;
+//                 vy = 0;
+//                 direction = "right";
+//             }
+//         }
+//         break;
+//         case LEFT:
+//             for(let i = 1; i < row + 1; i++){
+//                 if(py == centerY(i) && turnLeft()){
+//                     vx = -vel;
+//                     vy = 0;
+//                     direction = "left";
+//                 }
+//             }
+//    }
+}
+
+function pacmanControls(){
+    image(pacman,10,300,200,100);
+    translate(px += vx, py -= vy);
+    if(direction == "left"){
+        rotate(PI);
+    }
+    if(direction == "right"){
+        rotate(-PI);
+    }
+}
+
+function ghostControls(){
+
 }
 
 function chaosMode(){
