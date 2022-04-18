@@ -1,13 +1,16 @@
 let my,shared,pacmanFont;
 let marginVert,marginHori,col,row;
-let obstacles, borders, ballCol;
+let obstacles, borders, ballCol,pacmanCol;
 let path = [];
 let scene = 0;
 let size = 100;
+let pacSize = 50;
 let spacing = 2;
 let vel = 1;
 let speed,invert;
-let pacman;
+//let pacman,pacmanChompLeft;
+let x = 10;
+let y = 300;
 let direction = "";
 let px,py, red_px,red_py,blue_px,blue_py,green_px,green_py,purple_px,purple_py, 
 vx,vy,red_vx, red_vy, blue_vx, blue_vy, green_vx, green_vy, purple_vx, purple_vy;//x & y velocity
@@ -28,8 +31,9 @@ function preload(){
 
 
      //sprites
+     //pacman = loadImage("assets/Pacman.png");
     //pacman = loadImage("https://brittlizprice.com/wp-content/uploads/2022/04/Pacman.gif");
-    pacman = loadImage("assets/Pacman.gif");
+    //pacmanChompLeft = loadImage("assets/Pacman.gif");
      //Font
      pacmanFont = loadFont("assets/crackman.TTF");
 }
@@ -37,7 +41,8 @@ function preload(){
 function setup(){
     let mainCanvas = createCanvas(1400,1000);
     mainCanvas.parent("canvasdiv");
-    let frameCount = frameRate(60);
+    background(1);
+    let frameCount = frameRate(100);
     textFont(pacmanFont);
     col = width / size;
     row = height / size;
@@ -47,6 +52,7 @@ function setup(){
     obstacles = color(50,0,200);
     borders = color(80,60,200);
     ballCol = color(255);
+    pacmanCol = color(254,213,0);
 
     speed = false;
     invert = false;
@@ -120,7 +126,6 @@ function setup(){
 }
 
 function draw(){
-    background(1);
   //  image(pacman,300,300,200,100);
     switch(scene){
     case 1:
@@ -143,7 +148,7 @@ function startScreen(){
     textSize(60);
     fill(255);
     if(frameCount % 60 < 30){
-        text("Start Game",500,750);
+       text("Start Game",500,750);
     }
 }
 
@@ -152,11 +157,18 @@ function waitForHost(){
 }
 
 function game(){
+    background(0);
     maze();
     tokens();
     pacmanControls();
+    collisionDetection();
     // ghostControls();
     // chaosMode();
+    //pacman appears on the other side of the screen when out of bounds
+    px = (px + width) % width;
+
+    //pacman movement
+    keyPressed();
 }
 
 function gameOver(){
@@ -223,14 +235,14 @@ function maze(){
     walls(10, 8, 1, 2);
     walls(11, 9, 1, 1);
 }
-
+//draw walls after tokens - temp fix
 function walls(x,y,numC,numR){
     let x0, y0, large, comp;
     x0 = marginHori + (x - 1) * size;
     y0 = marginVert + (y - 1) * size;
     large = numC * size;
     comp = numR * size;
-    fill(50,0,200);
+    fill(obstacles);
     noStroke();
     strokeWeight(spacing / 2);
     rect(x0,y0,large,comp);
@@ -246,10 +258,18 @@ function tokens(){
     for(let j = 1; j <= row; j++){
        cx = centerX(i);
        cy = centerY(j);
+       //splice(list, value, position)
        path[j][i] = 2;//fix - draws all over the maze
+       //splice(path,);
+       //target the position or color of walls
+       if(cy == 9){
+        path.splice(i,1);
+        path.splice(j,1);
+       }
        if(path[j][i] == 2){
-            fill(ballCol);
-            ellipse(cx,cy,25,25);
+         // path[i].splice(j,1);
+          fill(ballCol);
+          ellipse(cx,cy,25,25);
        }
     }
   }
@@ -264,10 +284,12 @@ function centerY(nLin){
 }
 
 //may cause issues later
+// transform a cell's index into on-screen coordinates
 function positionX(px){
     return (int)(((px - marginHori) / size) + 0.5);
 }
 
+// transform a cell's index into on-screen coordinates
 function positionY(py){
   return (int)(((py - marginVert) / size) + 0.5);
 }
@@ -294,40 +316,80 @@ function turnLeft(){
     return true;
 }
 
+//check if pacman can turn downward
+function turnDown(){
+    if(path[positionY(py) + 1][positionX(px)] != 0){
+        return true;
+    }
+    else{
+        return false;
+    }
+}
+
+function turnUp(){
+    for(let j = 1; j <= row; j++){
+        for(let i = 1; i <= col; i++){
+            if(px == centerX(i) && py == centerY(j)){
+                if(get(centerX(i),centerY(j - 1)) == obstacles || py <= centerY(1)){
+                    return false;
+                }
+            }
+        }
+    }
+    return true;
+}
+
 function keyPressed(){
- //right
-  if(keyCode == 39){
+    if(keyIsPressed){
+        //right
+  if(keyCode == RIGHT_ARROW){
     for(let i = 1; i < row + 1; i++){
         if(py == centerY(i) && turnRight()){
             vx = vel;
             vy = 0;
             direction = "right";
         }
+       // x += 5;
     }
+
     console.log("Right arrow pressed");
   }
 
   //left
-  if(keyCode == 37){
+  if(keyCode == LEFT_ARROW){
     for(let i = 1; i < row + 1; i++){
         if(py == centerY(i) && turnLeft()){
             vx = -vel;
             vy = 0;
             direction = "left";
         }
+       // x -= 5;
     }
     console.log("Left arrow pressed");
   }
 
   //up
-  if(keyCode == 38){
-     
+  if(keyCode == UP_ARROW){
+     for(let i = 1; i < col + 1; i++){
+         if(px == centerX(i) && turnUp()){
+             vx = 0;
+             vy = vel;
+             direction = "up";
+         }
+     }
   }
 
   //down
-  if(keyCode == 40){
-
+  if(keyCode == DOWN_ARROW){
+    for(let i = 1; i < col + 1; i++){
+        if(px == centerX(i) && turnDown()){
+            vx = 0;
+            vy = -vel;
+            direction == "down";
+        }
+    }
   }
+    }
 //    switch(keyCode){
 //        case RIGHT:
 //         for(let i = 1; i < row + 1; i++){
@@ -350,13 +412,55 @@ function keyPressed(){
 }
 
 function pacmanControls(){
-    image(pacman,10,300,200,100);
+    fill(pacmanCol);
+    push();
     translate(px += vx, py -= vy);
+
+    if(direction == "down"){
+        rotate(HALF_PI);
+    }
+
+    if(direction == "up"){
+        rotate(PI + HALF_PI);
+    }
+
     if(direction == "left"){
         rotate(PI);
+        // push();
+        // fill(0);
+        // ellipse(0,-10,10,10);
+        // pop();
     }
-    if(direction == "right"){
-        rotate(-PI);
+    //right
+    if(vx != 0 || vy != 0){
+        //if pacman's moving then do the animation
+        arc(0,0,pacSize,pacSize,map((millis() % 350), 50, 300, 0, 0.52), map((millis() % 350), 50, 300, TWO_PI, 5.76));
+        // push();
+        // fill(0);
+        // ellipse(0,-10,10,10);
+        // pop();
+    }
+    else{
+        //no animation if he's not moving
+        arc(0,0,pacSize,pacSize,QUARTER_PI,(7 + PI/4));
+    }
+    pop();
+}
+
+function collisionDetection(){
+    if(!turnRight() && direction == "right"){
+        vx = 0;
+    }
+    if(!turnLeft() && direction == "left"){
+        vx = 0;
+    }
+
+    if(!turnDown() && direction == "down"){
+        vy = 0;
+    }
+
+    if(turnUp() && direction == "up"){
+        vy = 0;
     }
 }
 
