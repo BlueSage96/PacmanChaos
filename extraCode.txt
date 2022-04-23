@@ -1,3 +1,174 @@
+//pacman class
+  draw(){
+        fill(this.color);
+        let theta = PI / 3 * sq(sin(this.thetaOff));//chomping
+
+        if(this.speedY < 0){
+            arc(px,py,this.r,this.r, -theta - PI/6, theta + 7 * PI/6);
+        }
+        else if(this.speedY > 0){
+            arc(px,py,this.r,this.r, -7 * PI/6 - theta, theta + PI/6);
+        }
+        else if(this.speedX < 0){
+            arc(px, py, this.r,this.r,theta + PI, -theta + PI);
+        }
+        else if(this.speedX > 0){
+            arc(px, py, this.r,this.r,theta, -theta);
+        }
+
+        else{
+            //up
+            if(this.dir == 0){
+                arc(px,py,this.r,this.r,-theta - PI/6, theta + 7 * PI/6);
+            }
+            //down
+            else if(this.dir == 1){
+                arc(px,py,this.r,this.r,-7 * PI/6 - theta, theta + PI/6);
+            }
+            //left
+            else if(this.dir == 2){
+                arc(px,py,this.r,this.r,theta + PI, -theta + PI);
+            }
+            //right
+            else if(this.dir == 3){
+                arc(px,py,this.r,this.r,theta,-theta);
+            }
+            else{
+                arc(px,py,this.r,this.r,theta,-theta);//something wrong here w/ direction of mouth
+                //eyes
+                fill(0);
+                ellipse(px + 10, py - 10,10,10);
+            }
+        }
+
+
+       
+        this.thetaOff += 0.15;//mouth movement
+        console.log(theta);
+    }
+
+    move(){
+        px += vx;
+        py += vy;
+        vx = 0;
+        vy = 0;
+
+        if(keyIsDown(UP_ARROW)){
+            vx = 0;
+            vy = -vel * this.speedY;
+            this.dir = 0;
+        }
+
+        if(keyIsDown(DOWN_ARROW)){
+            vx = 0;
+            vy = vel * this.speedY;
+            this.dir = 1;
+        }
+
+        if(keyIsDown(LEFT_ARROW)){
+            vx = -vel * this.speedX;
+            vy = 0;
+            this.dir = 2;
+        }
+
+        if(keyIsDown(RIGHT_ARROW)){
+            vx = vel * this.speedX;
+            vy = 0;
+            this.dir = 3;
+        }
+    }
+
+//may cause issues later
+// transform a cell's index into on-screen coordinates
+// function positionX(px){
+//     return (int)(((px - marginHori) / size) + 0.5);
+// }
+
+// // transform a cell's index into on-screen coordinates
+// function positionY(py){
+//   return (int)(((py - marginVert) / size) + 0.5);
+// }
+
+// function pacmanControls(){
+//      px += vx;
+//      py += vy;
+//      vx = 0;
+//      vy = 0;
+
+//     //right
+//     if(keyIsDown(RIGHT_ARROW)){
+//       vx = vel * speed;
+//        vy = 0;
+//     }
+
+//     //left
+//     if(keyIsDown(LEFT_ARROW)){
+//         vx = -vel * speed;
+//        vy = 0;
+//     }
+
+
+//     //up
+//     if(keyIsDown(UP_ARROW)){
+//        vx = 0;
+//        vy = -vel * speed;
+//     }
+    
+//     //down
+//     if(keyIsDown(DOWN_ARROW)){
+//         vx = 0;
+//         vy = vel * speed;
+//     }
+   
+// }
+
+// function pacmanDraw(){
+//     fill(pacmanCol);
+//    // translate(px, py);
+//     ellipse(px,py,pacSize,pacSize);
+// }
+
+//    switch(keyCode){
+//        case RIGHT:
+//         for(let i = 1; i < row + 1; i++){
+//             if(py == centerY(i) && turnRight()){
+//                 vx = vel;
+//                 vy = 0;
+//                 direction = "right";
+//             }
+//         }
+//         break;
+//         case LEFT:
+//             for(let i = 1; i < row + 1; i++){
+//                 if(py == centerY(i) && turnLeft()){
+//                     vx = -vel;
+//                     vy = 0;
+//                     direction = "left";
+//                 }
+//             }
+//             break;
+
+            // case UP:
+            //   for(let i = 1; i < col + 1; i++){
+            //     if(px == centerX(i) && turnUp()){
+            //         vx = 0;
+            //         vy = vel;
+            //         direction = "up";
+            //     }
+            // }
+            // break;
+            // case DOWN:
+            //    for(let i = 1; i < col + 1; i++){
+            //         if(px == centerX(i) && turnDown()){
+            //             vx = 0;
+            //             vy = -vel;
+            //             direction == "down";
+            //         }
+            //     }
+            // break;
+    // }
+
+
 let my,shared,pacmanFont;
 let marginVert,marginHori,col,row;
 let obstacles, borders;

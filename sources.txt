@@ -1,2 +1,8 @@
 blinking text:
 https://stackoverflow.com/questions/59505849/specific-blinking-on-p5js
+
+drawing pacman:
+https://editor.p5js.org/frutose/sketches/Vqru1IjAK
+
+image as link to another page:
+https://discourse.processing.org/t/how-to-use-an-image-as-a-link-between-different-html-pages/29487/2

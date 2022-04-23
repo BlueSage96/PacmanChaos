@@ -51,31 +51,16 @@ html, body {
   #canvasdiv{
       border: 2px solid white;
       position: absolute;
-      top: 12vh;
+      top: 2vh;
       left: 19.5vw;
-      background-color: black;
+      /* background-color: black; */
   }
 
-  #infoBox{
-    font-size: 40px;
-    border: 2px solid white;
-    position: absolute;
-    top: 18vh;
-    left: 25vw;
-    color: white;
-    background-color: black;
-  }
-
-  #title,#instructions{
+  #instructions{
       color: white;
-      font-size: 80px;
+      font-size: 60px;
       margin-left: 800px;
       margin-top: 20px;
-  }
-
-  span{
-      background-color: black;
-      padding: 0 20px;
   }
 
   button{
@@ -103,7 +88,7 @@ html, body {
   #instructionsButton{
       position: absolute;
       top: 45vh;
-      left: 78.5vw;
+      left: 80vw;
       padding: 5px 0;
   }
 
@@ -126,7 +111,7 @@ html, body {
   #original{
     position: absolute;
     top: 25vh;
-    left: 78.5vw;
+    left: 83vw;
     padding: 5px 0;
 }
 
@@ -142,8 +127,8 @@ select#menu{
     font-family: pacmanFont;
     background-color: black;
     color: white;
-    padding: 40px;
-    font-size: 30px;
+    padding: 20px;
+    font-size: 40px;
 }
 
 #rights{
@@ -151,5 +136,106 @@ select#menu{
     color: white;
     font-size: 40px;
     padding-left: 50px;
-    margin-top: 30px;
+    margin-top: 160px;
+}
+
+/*instructions.html*/
+#infoBox{
+    font-size: 40px;
+    border: 2px solid white;
+    position: absolute;
+    top: 18vh;
+    left: 25vw;
+    color: white;
+    background-color: black;
+ }
+
+@media only screen and (max-width: 2260px){
+     /*index.html*/
+  
+    /* div.flexbox{
+        width: 80vw;
+        height: 80vh;
+        padding-bottom: 10px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    } */
+
+    #canvasdiv{
+        border: 2px solid white;
+        position: absolute;
+        top: 2vh;
+        left: 19.5vw;
+    }
+
+    button{
+        font-family: pacmanFont;
+        font-size: 45px;
+        background-color: black;
+        color: white;
+        padding: 0;
+    }
+
+    #toggle{
+        position: absolute;
+        top: 25vh;
+        left: 0.6vw;
+        padding: 20px;
+    }
+
+    #kit{
+    position: absolute;
+    top: 45vh;
+    left: 3vw;
+    padding: 5px 0;
+    }
+
+    #instructionsButton{
+        position: absolute;
+        top: 45vh;
+        left: 80vw;
+        padding: 3px 0;
+    }
+
+    #instructionsButton a, #back a, #original a, #kit a{
+        color: white;
+        text-decoration: none;
+        padding: 20px;
+    }
+
+    #instructionsButton a:hover, #back a:hover, #original a:hover, #toggle:hover, #kit a:hover{
+        color: yellow;
+        background-color: gray;
+    }
+
+    #back{
+    margin-left: 50px;
+    padding: 5px 0;
+    }
+
+    #original{
+        position: absolute;
+        top: 25vh;
+        left: 86vw;
+        padding: 5px 0;
+    }
+
+    select#menu{
+        color: white;
+        padding: 20px;
+        top:
+        left: 100vw;
+        
+    }
+    /*instructions.html*/
+    #infoBox{
+        font-size: 30px;
+        border: 2px solid white;
+        position: absolute;
+        top: 18vh;
+        left: 25vw;
+        color: white;
+        background-color: black;
+    }
 }
