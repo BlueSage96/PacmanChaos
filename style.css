@@ -224,9 +224,8 @@ select#menu{
     select#menu{
         color: white;
         padding: 20px;
-        top:
+        top: 45vh;
         left: 100vw;
-        
     }
     /*instructions.html*/
     #infoBox{
