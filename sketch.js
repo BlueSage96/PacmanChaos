@@ -16,6 +16,7 @@ let spacing = 2;
 // let thetaOff = 0;
 // let vel = 1;
 let pacman,instructions,link;
+let titleBackground;
 let x = 10;
 let y = 300;
 // let px,py,vx,vy;//x & y velocity
@@ -26,7 +27,7 @@ let redGhostArray = [];
 let blueGhostArray = [];
 let greenGhostArray = [];
 let purpleGhostArray = [];
-let frameCount = 0;
+// let frameCount = 0;
 
 function preload(){
     partyConnect(
@@ -39,6 +40,8 @@ function preload(){
     participants = partyLoadParticipantShareds();
     //sounds
 
+    //images
+    titleBackground = loadImage("assets/titleScreen.png");
     //sprites
     redGhostArray[0] = loadImage("assets/RedGhostStatic.png");
     redGhostArray[1] = loadImage("assets/RedGhostLeft.png");
@@ -75,7 +78,7 @@ function preload(){
 function setup(){
     let mainCanvas = createCanvas(1450,1150);
     mainCanvas.parent("canvasdiv");
-    frameCount = frameRate(200);
+    let frameCount = frameRate(200);
 
     background(1);
     // angleMode(RADIANS);
@@ -216,22 +219,23 @@ function draw(){
 
 
 function mousePressed(){
-    if(scene == 0 && mouseX < 950 && mouseX > 500 && mouseY < 850 && mouseY > 750){
+    if(scene == 0 && mouseX < 950 && mouseX > 500 && mouseY < 950 && mouseY > 850){
         scene = 1;
     }
 
-    //exit 
+    //exit or quit
 }
 
 function startScreen(){
+    image(titleBackground,50,100);
     textSize(100);
     fill(255);
-    text("Pac-man: Chaos",250,450);
+    text("Pac-man: Chaos",250,350);
     textSize(60);
-   //if(frameCount % 60 < 30){
-       text("Start Game",500,850);
-  // }
-  // console.log(frameCount);
+    if(frameCount % 60 < 30){
+        text("Start Game",500,950);
+    }
+  console.log(frameCount);
    //buttonHighlight();
 }
 
@@ -838,10 +842,11 @@ function purpleGhostControls(){
 
 
 function detectWall(){
-//make an array of the walls for collision detection and the eggs 
-//if pacman enters the wall - check
-//loop through walls and make sure he doesn't intersect with them
-//make sure the distance b/n pacman and the walls aren't 0
+/*make an array of the walls for collision detection and the eggs 
+if pacman enters the wall - check
+loop through walls and make sure he doesn't intersect with them
+make sure the distance b/n pacman and the walls aren't 0*/
+
     for(let i = 0; i < createWalls.length; i++){
         // if(dist(shared.pacman,createWalls[i]) == 0){
         //    shared.pacman = -shared.px;
