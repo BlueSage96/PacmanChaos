@@ -26,6 +26,8 @@ html, body {
     background-image: url("assets/background.jpg");
     background-repeat: no-repeat;
     overflow: hidden;
+    zoom: 100%;
+    zoom: normal;
   }
 
   canvas {
@@ -51,9 +53,8 @@ html, body {
   #canvasdiv{
       border: 2px solid white;
       position: absolute;
-      top: 2vh;
+      top: 1vh;
       left: 19.5vw;
-      /* background-color: black; */
   }
 
   #instructions{
@@ -65,22 +66,23 @@ html, body {
 
   button{
       font-family: pacmanFont;
-      font-size: 50px;
+      font-size: 40px;
       background-color: black;
       color: white;
       padding: 0;
   }
 
   #toggle{
+      font-size: 35px;
       position: absolute;
-      top: 25vh;
-      left: 0.6vw;
-      padding: 20px;
+      top: 35vh;
+      left: 2vw;
+      padding: 10px;
   }
 
   #kit{
     position: absolute;
-    top: 45vh;
+    top: 60vh;
     left: 3vw;
     padding: 5px 0;
 }
@@ -101,7 +103,7 @@ html, body {
   #instructionsButton a:hover, #back a:hover, #original a:hover, #toggle:hover, #kit a:hover{
       color: yellow;
       background-color: gray;
-  }
+  } 
 
   #back{
      margin-left: 50px;
@@ -109,11 +111,12 @@ html, body {
   }
 
   #original{
+    font-size: 45px;
     position: absolute;
-    top: 25vh;
-    left: 83vw;
+    top: 35vh;
+    left: 82vw;
     padding: 5px 0;
-}
+} 
 
 /* #copyright{
     background-color: black;
@@ -128,19 +131,19 @@ select#menu{
     background-color: black;
     color: white;
     padding: 20px;
-    font-size: 40px;
+    font-size: 30px;
 }
 
 #rights{
     background-color: black;
     color: white;
-    font-size: 40px;
+    font-size: 25px;
     padding-left: 50px;
-    margin-top: 160px;
-}
+    margin-top: 135px;
+} 
 
 /*instructions.html*/
-#infoBox{
+ #infoBox{
     font-size: 40px;
     border: 2px solid white;
     position: absolute;
@@ -149,92 +152,3 @@ select#menu{
     color: white;
     background-color: black;
  }
-
-@media only screen and (max-width: 2260px){
-     /*index.html*/
-  
-    /* div.flexbox{
-        width: 80vw;
-        height: 80vh;
-        padding-bottom: 10px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    } */
-
-    #canvasdiv{
-        border: 2px solid white;
-        position: absolute;
-        top: 2vh;
-        left: 19.5vw;
-    }
-
-    button{
-        font-family: pacmanFont;
-        font-size: 45px;
-        background-color: black;
-        color: white;
-        padding: 0;
-    }
-
-    #toggle{
-        position: absolute;
-        top: 25vh;
-        left: 0.6vw;
-        padding: 20px;
-    }
-
-    #kit{
-    position: absolute;
-    top: 45vh;
-    left: 3vw;
-    padding: 5px 0;
-    }
-
-    #instructionsButton{
-        position: absolute;
-        top: 45vh;
-        left: 80vw;
-        padding: 3px 0;
-    }
-
-    #instructionsButton a, #back a, #original a, #kit a{
-        color: white;
-        text-decoration: none;
-        padding: 20px;
-    }
-
-    #instructionsButton a:hover, #back a:hover, #original a:hover, #toggle:hover, #kit a:hover{
-        color: yellow;
-        background-color: gray;
-    }
-
-    #back{
-    margin-left: 50px;
-    padding: 5px 0;
-    }
-
-    #original{
-        position: absolute;
-        top: 25vh;
-        left: 86vw;
-        padding: 5px 0;
-    }
-
-    select#menu{
-        color: white;
-        padding: 20px;
-        top: 45vh;
-        left: 100vw;
-    }
-    /*instructions.html*/
-    #infoBox{
-        font-size: 30px;
-        border: 2px solid white;
-        position: absolute;
-        top: 18vh;
-        left: 25vw;
-        color: white;
-        background-color: black;
-    }
-}

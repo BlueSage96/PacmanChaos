@@ -5,9 +5,9 @@ let path = [];
 let wasHere = [];
 let createWalls = [];
 let scene = 0;
-let size = 100;
+let size = 90;
 let pacSize = 60;
-let ghostSize = 70;
+let ghostSize = 60;
 let spacing = 2;
 // let speed = 3;
 // let speedX = 0;
@@ -76,18 +76,15 @@ function preload(){
 }
 
 function setup(){
-    let mainCanvas = createCanvas(1450,1150);
+    let mainCanvas = createCanvas(1100,900);
     mainCanvas.parent("canvasdiv");
     let frameCount = frameRate(200);
-
-    background(1);
     // angleMode(RADIANS);
     textFont(pacmanFont);
-    col = width / size;//  1400/10 = 14
-    row = height / size; // 1000/100 = 10
-    //(1400 - 14 * 100) / 2 = 0
+    col = width / size;
+    row = height / size; 
+   
     marginVert = Math.floor((width - col * size) / 2);
-    // (1000 - 10 * 100)/ 2 = 0
     marginHori = Math.floor((height - row * size) / 2);
     //change colors - or make them random
     obstacles = color(50,0,200);
@@ -97,8 +94,8 @@ function setup(){
     link = createA("instructions.html","");
 
     instructions = createImg("assets/icon.png","instructions.html").parent(link);
-    instructions.position(1700,100);
-    instructions.size(80,80);
+    instructions.position(1350,50);
+    instructions.size(60,60);
 
     for(let i = 0; i < col; i++){
         path[i] = [];
@@ -117,7 +114,7 @@ function setup(){
         partySetShared(shared,{
             player: 0,
             //initialize pacman
-            px: centerX(8),
+            px: centerX(6),
             py: centerY(7),
             vx: 0,
             vy: 0,
@@ -134,26 +131,26 @@ function setup(){
             theta: 0,
 
             //red ghost
-            red_px: ghostCenterX(7),
+            red_px: ghostCenterX(5),
             red_py: ghostCenterY(4),
             red_vx: 0,
             red_vy: 0,
 
             //blue
-            blue_px: ghostCenterX(8),
+            blue_px: ghostCenterX(6),
             blue_py: ghostCenterY(4),
             blue_vx: 0,
             blue_vy: 0,
 
             //green
-            green_px: ghostCenterX(7),
+            green_px: ghostCenterX(5),
             green_py: ghostCenterY(5),
             green_vx: 0,
             green_vy: 0,
             green_pathCount: 0,
 
             //purple
-            purple_px: ghostCenterX(8),//was col
+            purple_px: ghostCenterX(6),//was col
             purple_py: ghostCenterY(5),
             purple_vx: 0,
             purple_vy: 0,
@@ -174,7 +171,7 @@ function setup(){
     teamDropDownMenu.option("Blue Ghost");
     teamDropDownMenu.option("Green Ghost");
     teamDropDownMenu.option("Purple Ghost");
-    teamDropDownMenu.position(1935,600);
+    teamDropDownMenu.position(1470,600);
     teamDropDownMenu.id("menu");
 
     // if(partyIsHost){
@@ -205,6 +202,7 @@ function setup(){
 }
 
 function draw(){
+    background(1);
     instructions.hide();
     switch(scene){
     case 1:
@@ -219,7 +217,7 @@ function draw(){
 
 
 function mousePressed(){
-    if(scene == 0 && mouseX < 950 && mouseX > 500 && mouseY < 950 && mouseY > 850){
+    if(scene == 0 && mouseX < 800 && mouseX > 350 && mouseY < 750 && mouseY > 700){
         scene = 1;
     }
 
@@ -227,13 +225,14 @@ function mousePressed(){
 }
 
 function startScreen(){
-    image(titleBackground,50,100);
-    textSize(100);
+    image(titleBackground,50,20,1000,1000);
+    textSize(90);
     fill(255);
-    text("Pac-man: Chaos",250,350);
+    text("Pac-man: Chaos",100,250);
     textSize(60);
+    
     if(frameCount % 60 < 30){
-        text("Start Game",500,950);
+        text("Start Game",350,750);
     }
   console.log(frameCount);
    //buttonHighlight();
@@ -299,58 +298,57 @@ function maze(){
     stroke(borders);
     strokeWeight(spacing * 3);
     //
-    rect(marginHori + 20,marginVert + 15,1400, 1120);//recalculate
+    rect(marginHori + 20,marginVert + 15,1050, 870);//recalculate
     fill(0);
     noStroke();
 
     //exits
     //left side
-    rect(9, centerY(6) - 25, 25, 100);
+    rect(9, centerY(6) - 100, 25, 100);
     stroke(borders);
-    line(centerX(0),centerY(6) - 25, centerX(1) - 30, centerY(6) - 25);
-    line(centerX(0), centerY(6) + 75, centerX(1) - 30, centerY(6) + 75);
+    line(centerX(0),centerY(6) - 100, centerX(1) - 25, centerY(6) - 100);
+    line(centerX(0), centerY(6), centerX(1) - 25, centerY(6));
 
     //right
     noStroke();
-    rect(centerX(col) + 10, centerY(6) - 25, 25, 120);
+    rect(centerX(col) + 10, centerY(6) - 100, 25, 100);
     stroke(borders);
-    line(centerX(col) + 21, centerY(6) - 25, centerX(col + 1), centerY(6) - 25);
-    line(centerX(col) + 21, centerY(6) + 95, centerX(col + 1), centerY(6) + 95);
+    line(centerX(col) + 15, centerY(6) - 100, centerX(col + 1), centerY(6) - 100);
+    line(centerX(col) + 15, centerY(6), centerX(col + 1), centerY(6));
     /*
     make array of the walls to loop through it
     change the walls!
     Draw obstacles of the type: (column, row, width XX, length YY)
     array of coordinates - iterate and don't draw eggs on the coordinates*/
     createWalls = [
-            //top left
-            walls(2, 2, 2, 1),
-            walls(2, 5, 2, 1),
-            walls(2, 5, 1, 3),
-            walls(4, 2, 1, 2),
-            //bottom left
-            walls(2, 9, 1, 3),
-            walls(2, 9, 2, 1),
-            walls(5, 8, 1, 3),
-            walls(4, 11, 3, 1),
-            //bottom right
-            walls(11,11,3,1),
-            walls(13,9,1,3),
-            //ghost cage
-            walls(6, 4, 1, 2),
-            walls(6, 6, 2, 1),
-            walls(7, 6, 2, 1),
-            walls(9, 4, 1, 3),
-            //T
-            walls(7, 8, 4, 1),
-            walls(8, 9, 1, 2),
-            //walls(6, 4, 4, 1),
+        //top left
+        walls(2, 2, 1, 2),
+        walls(2, 2, 2, 1),
 
-            //top
-            walls(7, 2, 4, 1),
+        //bottom left
+        walls(2, 7, 1, 2),
+        walls(2, 7, 1, 1),
+        walls(2, 8, 2, 1),
+        walls(4, 8, 1, 2),
+  
+        //top right
+        walls(8, 2, 2, 1),
+        walls(10, 2, 1, 3),
 
-            //top right - cross
-            walls(11, 4, 3, 1),
-            walls(12, 2, 1, 6)
+        //ghost cage
+        walls(4, 4, 1, 2),
+        walls(4, 6, 2, 1),
+        walls(5, 6, 2, 1),
+        walls(7, 4, 1, 3),
+        
+        //bottom
+        walls(6, 10, 2, 0.75),
+        //bottom right
+        walls(10, 6, 1, 1),
+        walls(10, 7, 2, 1),
+        walls(8, 8, 2, 1),
+        walls(9, 8, 1, 2),
+          
     ];
 }
 
@@ -359,8 +357,8 @@ function walls(x,y,numC,numR){
     let x0, y0, large, comp;
     x0 = marginHori + (x - 1) * size; // _ + (9) * 100 = 
     y0 = marginVert + (y - 1) * size; // _ + (299) * 100 = 
-    large = numC * size;
-    comp = numR * size;
+    large = numC * 90;
+    comp = numR * 90;
     fill(obstacles);
     noStroke();
     strokeWeight(spacing / 2);
@@ -374,7 +372,7 @@ function tokens(){
   for(let i = 1; i <= col; i++){
     for(let j = 1; j <= row; j++){
        cx = centerX(i);
-       cy = centerY(j);//fixes space above and below tokens
+       cy = centerY(j);
        //splice(list, value, position)
        path[j][i] = 2;//fix - draws all over the maze
 
