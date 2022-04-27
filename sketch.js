@@ -225,10 +225,10 @@ function mousePressed(){
 }
 
 function startScreen(){
-    image(titleBackground,50,20,1000,1000);
+    image(titleBackground,0,0,1100,1000);
     textSize(90);
     fill(255);
-    text("Pac-man: Chaos",100,250);
+    text("Pac-man: Chaos",100,200);
     textSize(60);
     
     if(frameCount % 60 < 30){
