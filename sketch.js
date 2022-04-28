@@ -4,11 +4,13 @@ let obstacles, borders, ballCol,pacmanCol;
 let path = [];
 let wasHere = [];
 let createWalls = [];
+let eggs = [];
 let scene = 0;
 let size = 90;
-let pacSize = 60;
-let ghostSize = 60;
+let pacSize = 55;
+let ghostSize = 50;
 let spacing = 2;
+let isPaused = false;
 // let speed = 3;
 // let speedX = 0;
 // let speedY = 0;
@@ -16,7 +18,7 @@ let spacing = 2;
 // let thetaOff = 0;
 // let vel = 1;
 let pacman,instructions,link;
-let titleBackground;
+let titleBackground,paused;
 let x = 10;
 let y = 300;
 // let px,py,vx,vy;//x & y velocity
@@ -42,6 +44,8 @@ function preload(){
 
     //images
     titleBackground = loadImage("assets/titleScreen.png");
+    paused = loadImage("assets/PausedScreen.png");
+
     //sprites
     redGhostArray[0] = loadImage("assets/RedGhostStatic.png");
     redGhostArray[1] = loadImage("assets/RedGhostLeft.png");
@@ -78,7 +82,7 @@ function preload(){
 function setup(){
     let mainCanvas = createCanvas(1100,900);
     mainCanvas.parent("canvasdiv");
-    let frameCount = frameRate(200);
+    let frameCount = frameRate(100);
     // angleMode(RADIANS);
     textFont(pacmanFont);
     col = width / size;
@@ -175,23 +179,23 @@ function setup(){
     teamDropDownMenu.id("menu");
 
     // if(partyIsHost){
-        if(shared.player == 1){
+        if(shared.player == 0){
             my.selectedTeam = "Pac-man";
         }
-        else if(shared.player == 2){
+        else if(shared.player == 1){
             my.selectedTeam = "Red Ghost";
         }
+        else if(shared.player == 2){
+            my.selectedTeam = "Blue Ghost";
+        }
         else if(shared.player == 3){
-            my.sharedTeam = "Blue Ghost";
+            my.selectedTeam = "Green Ghost";
         }
         else if(shared.player == 4){
-            my.sharedTeam = "Green Ghost";
-        }
-        else if(shared.player == 5){
-            my.sharedTeam = "Purple Ghost";
+            my.selectedTeam = "Purple Ghost";
         }
         else{
-            my.sharedTeam = "Observer";
+            my.selectedTeam = "Observer";
         }
     // }
     
@@ -224,6 +228,19 @@ function mousePressed(){
     //exit or quit
 }
 
+function keyPressed(){
+    //P
+    // if(keyCode == 80){
+    //    // pause();
+    //     scene = 2;
+    //     isPaused = true;
+    // }
+    // else{
+    //     scene = 1;
+    //     isPaused = false;
+    // }
+}
+
 function startScreen(){
     image(titleBackground,0,0,1100,1000);
     textSize(90);
@@ -234,7 +251,7 @@ function startScreen(){
     if(frameCount % 60 < 30){
         text("Start Game",350,750);
     }
-  console.log(frameCount);
+
    //buttonHighlight();
 }
 
@@ -260,20 +277,28 @@ function game(){
 
     //blue ghost
     drawBlueGhost();
+    blueGhostControls();
 
     //green ghost
     drawGreenGhost();
+    greenGhostControls();
 
     //purple ghost
     drawPurpleGhost();
+    purpleGhostControls();
 
     // definePath();
 
-    detectWall();
+     detectWall();
     // chaosMode();
     //pacman appears on the other side of the screen when out of bounds
     shared.px = (shared.px + width) % width;
     shared.py = (shared.py + height) % height;//temporary
+
+    shared.red_px = (shared.red_px + width) % width;
+    shared.blue_px = (shared.blue_px + width) % width;
+    shared.green_px = (shared.green_px + width) % width;
+    shared.purple_px = (shared.purple_px + width) % width;
 }
 
 function gameOver(){
@@ -281,7 +306,9 @@ function gameOver(){
 }
 
 function pause(){
-
+    background(paused);
+    textSize(60);
+    text("PAUSED",300,300);
 }
 
 function death(){
@@ -320,7 +347,7 @@ function maze(){
     change the walls!
     Draw obstacles of the type: (column, row, width XX, length YY)
     array of coordinates - iterate and don't draw eggs on the coordinates*/
-    createWalls = [
+    
         //top left
         walls(2, 2, 1, 2),
         walls(2, 2, 2, 1),
@@ -347,9 +374,8 @@ function maze(){
         walls(10, 6, 1, 1),
         walls(10, 7, 2, 1),
         walls(8, 8, 2, 1),
-        walls(9, 8, 1, 2),
-          
-    ];
+        walls(9, 8, 1, 2);
+       // console.log(createWalls);
 }
 
 //draw walls after tokens - temp fix
@@ -363,9 +389,12 @@ function walls(x,y,numC,numR){
     noStroke();
     strokeWeight(spacing / 2);
     rect(x0,y0,large,comp);
+    //console.log(large,comp);
+    createWalls.push([x0,y0,large,comp]);
 }
 
 //pellets around the maze
+//use wall array - make sure eggs don't collide with walls - if they do remove eggs from egg array
 function tokens(){
   let cx,cy;
   noStroke();
@@ -374,15 +403,20 @@ function tokens(){
        cx = centerX(i);
        cy = centerY(j);
        //splice(list, value, position)
-       path[j][i] = 2;//fix - draws all over the maze
+       path[j][i] = 2;
 
        if(path[j][i] == 2){
          // path[i].splice(j,1);
           fill(ballCol);
-          ellipse(cx,cy,25,25);
+          let drawEgg = ellipse(cx,cy,25,25);
+          eggs.push(drawEgg);
+        //   if(dist(shared.px,shared.py,createWalls[i][0],createWalls[i][1]) < createWalls[i][2]/2){
+            
+        // }
        }
     }
   }
+  console.log(eggs);
 }
 
 //define the array of the map
@@ -502,25 +536,26 @@ function pacmanControls(){
 
     if(my.selectedTeam == "Pac-man"){
         //have to speed instead of speedX & speedY
-        if(keyIsDown(UP_ARROW)){
+        //Up arrow or W
+        if(keyIsDown(UP_ARROW) || keyIsDown(87)){
             shared.vx = 0;
             shared.vy = -shared.vel * shared.speed;
             shared.dir = 1;
         }
-
-        if(keyIsDown(DOWN_ARROW)){
+        //down arrow or S
+        if(keyIsDown(DOWN_ARROW) || keyIsDown(83)){
             shared.vx = 0;
             shared.vy = shared.vel * shared.speed;
             shared.dir = 2;
         }
-
-        if(keyIsDown(LEFT_ARROW)){
+        //left arrow & A
+        if(keyIsDown(LEFT_ARROW) || keyIsDown(65)){
             shared.vx = -shared.vel * shared.speed;
             shared.vy = 0;
             shared.dir = 3;
         }
-
-        if(keyIsDown(RIGHT_ARROW)){
+        //right arrow or D
+        if(keyIsDown(RIGHT_ARROW) || keyIsDown(68)){
             shared.vx = shared.vel * shared.speed;
             shared.vy = 0;
             shared.dir = 4;
@@ -576,38 +611,38 @@ function redGhostControls(){
     shared.red_vy = 0;
     //have to speed instead of speedX & speedY
 
-    // if(my.sharedTeam == "Red Ghost"){
+    if(my.selectedTeam == "Red Ghost"){
         //w - up
-        if(keyIsDown(87)){
+        if(keyIsDown(UP_ARROW) || keyIsDown(87)){
             shared.red_vx = 0;
             shared.red_vy = -shared.vel * shared.speed;
             shared.red_dir = 1;
         }
         //s - down
-        if(keyIsDown(83)){
+        else if(keyIsDown(DOWN_ARROW) || keyIsDown(83)){
             shared.red_vx = 0;
             shared.red_vy = shared.vel * shared.speed;
             shared.red_dir = 2;
         }
         //a - left
-        if(keyIsDown(65)){
+        else if(keyIsDown(LEFT_ARROW) || keyIsDown(65)){
             shared.red_vx = -shared.vel * shared.speed;
             shared.red_vy = 0;
             shared.red_dir = 3;
         }
         //d - right
-        if(keyIsDown(68)){
+        else if(keyIsDown(RIGHT_ARROW) || keyIsDown(68)){
             shared.red_vx = shared.vel * shared.speed;
             shared.red_vy = 0;
             shared.red_dir = 4;
         }
         //set ghost back to static if the player isn't moving
-        // else if(!keyIsDown(87) || !keyIsDown(83) || !keyIsDown(65) || !keyIsDown(68)){
-        //     shared.red_vx = 0;
-        //     shared.red_vy = 0;
-        //     shared.red_dir = 0;
-        // }
-    // }
+        else{
+            shared.red_vx = 0;
+            shared.red_vy = 0;
+            shared.red_dir = 0;
+        }
+    }
 }
 
 //Blue Ghost
@@ -658,32 +693,39 @@ function blueGhostControls(){
     shared.blue_vy = 0;
     //have to speed instead of speedX & speedY
 
-    // if(my.sharedTeam == "Blue Ghost"){
+    if(my.selectedTeam == "Blue Ghost"){
         //w
-        if(keyIsDown(87)){
+        if(keyIsDown(UP_ARROW) || keyIsDown(87)){
             shared.blue_vx = 0;
             shared.blue_vy = -shared.vel * shared.speed;
             shared.blue_dir = 1;
         }
         //s
-        if(keyIsDown(83)){
+        else if(keyIsDown(DOWN_ARROW) || keyIsDown(83)){
             shared.blue_vx = 0;
             shared.blue_vy = shared.vel * shared.speed;
             shared.blue_dir = 2;
         }
         //a
-        if(keyIsDown(65)){
+        else if(keyIsDown(LEFT_ARROW) || keyIsDown(65)){
             shared.blue_vx = -shared.vel * shared.speed;
             shared.blue_vy = 0;
             shared.blue_dir = 3;
         }
         //d
-        if(keyIsDown(68)){
+        else if(keyIsDown(RIGHT_ARROW) || keyIsDown(68)){
             shared.blue_vx = shared.vel * shared.speed;
             shared.blue_vy = 0;
             shared.blue_dir = 4;
         }
-    // }
+
+          //set ghost back to static if the player isn't moving
+          else{
+            shared.blue_vx = 0;
+            shared.blue_vy = 0;
+            shared.blue_dir = 0;
+        }
+    }
 }
 
 //Green Ghost
@@ -734,32 +776,39 @@ function greenGhostControls(){
     shared.green_vy = 0;
     //have to speed instead of speedX & speedY
 
-    // if(my.sharedTeam == "Green Ghost"){
+    if(my.selectedTeam == "Green Ghost"){
         //w
-        if(keyIsDown(87)){
+        if(keyIsDown(UP_ARROW) || keyIsDown(87)){
             shared.green_vx = 0;
             shared.green_vy = -shared.vel * shared.speed;
             shared.green_dir = 1;
         }
         //s
-        if(keyIsDown(83)){
+        else if(keyIsDown(DOWN_ARROW) || keyIsDown(83)){
             shared.green_vx = 0;
             shared.green_vy = shared.vel * shared.speed;
             shared.green_dir = 2;
         }
         //a
-        if(keyIsDown(65)){
+        else if(keyIsDown(LEFT_ARROW) || keyIsDown(65)){
             shared.green_vx = -shared.vel * shared.speed;
             shared.green_vy = 0;
             shared.green_dir = 3;
         }
         //d
-        if(keyIsDown(68)){
+        else if(keyIsDown(RIGHT_ARROW) || keyIsDown(68)){
             shared.green_vx = shared.vel * shared.speed;
             shared.green_vy = 0;
             shared.green_dir = 4;
         }
-    // }
+
+          //set ghost back to static if the player isn't moving
+        else{
+            shared.green_vx = 0;
+            shared.green_vy = 0;
+            shared.green_dir = 0;
+        }
+    }
 }
 
 //Purple Ghost
@@ -810,49 +859,68 @@ function purpleGhostControls(){
     shared.purple_vy = 0;
     //have to speed instead of speedX & speedY
 
-    // if(my.sharedTeam == "Purple Ghost"){
+    if(my.selectedTeam == "Purple Ghost"){
         //w
-        if(keyIsDown(87)){
+        if(keyIsDown(UP_ARROW) || keyIsDown(87)){
             shared.purple_vx = 0;
             shared.purple_vy = -shared.vel * shared.speed;
             shared.purple_dir = 1;
         }
         //s
-        if(keyIsDown(83)){
+        else if(keyIsDown(DOWN_ARROW) || keyIsDown(83)){
             shared.purple_vx = 0;
             shared.purple_vy = shared.vel * shared.speed;
             shared.purple_dir = 2;
         }
         //a
-        if(keyIsDown(65)){
+        else if(keyIsDown(LEFT_ARROW) || keyIsDown(65)){
             shared.purple_vx = -shared.vel * shared.speed;
             shared.purple_vy = 0;
             shared.purple_dir = 3;
         }
         //d
-        if(keyIsDown(68)){
+        else if(keyIsDown(RIGHT_ARROW) || keyIsDown(68)){
             shared.purple_vx = shared.vel * shared.speed;
             shared.purple_vy = 0;
             shared.purple_dir = 4;
         }
-    // }
+
+        //set ghost back to static if the player isn't moving
+        else{
+            shared.purple_vx = 0;
+            shared.purple_vy = 0;
+            shared.purple_dir = 0;
+        }
+    }
 }
 
 
 function detectWall(){
-/*make an array of the walls for collision detection and the eggs 
-if pacman enters the wall - check
-loop through walls and make sure he doesn't intersect with them
-make sure the distance b/n pacman and the walls aren't 0*/
-
+    /*make an array of the walls for collision detection and the eggs 
+    First check if packman is going up-down or left-right
+    If up down check if Dist < h/2
+    */
+    //console.log(dist(shared.px,shared.py,createWalls[0][0],createWalls[0][1]));
     for(let i = 0; i < createWalls.length; i++){
-        // if(dist(shared.pacman,createWalls[i]) == 0){
-        //    shared.pacman = -shared.px;
-        //    shared.pacman = -shared.py;
-        // }
-        // else{
-            
-        // }
+        if(shared.dir == 1 || shared.dir == 2){
+            if(dist(shared.px,shared.py,createWalls[i][0],createWalls[i][1]) < createWalls[i][2]/2){
+                //vertical collision - make velocity 0
+                shared.vel = 0;
+            }
+            else{
+                shared.vel = 1;
+            }
+        }
+       //same for width
+       if(shared.dir == 3 || shared.dir == 4){
+        if(dist(shared.px,shared.py,createWalls[i][0],createWalls[i][3]) < createWalls[i][4]/2){
+            //horizontal collision - make velocity 0
+            shared.vel = 0;
+        }
+         else{
+             shared.vel = 1;
+         }
+       } 
     }
 }
 
