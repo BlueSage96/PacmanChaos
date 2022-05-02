@@ -2,14 +2,98 @@
 <html>
     <head>
         <meta charset="utf-8"/>
-        <link rel="stylesheet" text="" href="style.css">
+        <link rel="stylesheet" text="" href="instructions.css">
     </head>
 
     <body>
         <h1 id="instructions"><span>Instructions</span></h1>
         <div class="flexbox">
             <div id="infoBox">
-                Instructions will appear here
+                <p id="controls">Use the WASD or Arrow keys to control Pac-man or the ghosts.
+                </p>
+                <br>
+
+                <div id="pacmanContainer">
+                <span id="Pacman">Pac-man</span>
+                <img id="pacman" src="assets/pacman.png"/>
+                <p id="pacRole">eat all of the pellets without getting caught</p>
+                </div>
+                <div>
+               
+                <div class="row">
+                    <div class="column">
+                        <img id="pellets" src="assets/Pellets.png"/>
+                    </div>
+                    <div class="column">
+                        <img id="pellets2" src="assets/Pellets.png"/>
+                    </div>
+                    <div class="column">
+                        <img id="pellets3" src="assets/Pellets.png"/>
+                    </div>
+                </div>
+                 <!--Red--> 
+                 <div class="blinkyContainer">
+                 <p id="blinkyRole">Catch Pac-man before Inky, Clyde or Winky</p>
+                 <img id="redGhost" src="assets/LargeRedGhostStatic.png"/>
+                 <span id="blinky">Blinky</span>
+                </div>
+
+                <div class="row">
+                    <div class="column">
+                        <img id="pellets3" src="assets/Pellets.png"/>
+                    </div>
+                    <div class="column">
+                        <img id="pellets4" src="assets/Pellets.png"/>
+                    </div>
+                    <div class="column">
+                        <img id="pellets5" src="assets/Pellets.png"/>
+                    </div>
+                </div>
+
+                <div class="inkyContainer">
+                <!--Blue-->
+                <span id="inky">Inky</span>
+                <img id="blueGhost" src="assets/LargeBlueGhostStatic.png"/>
+                <p id="inkyRole">Be the best Pac-man hunter of all time</p>
+                </div>
+
+                <div class="row">
+                    <div class="column">
+                        <img id="pellets6" src="assets/Pellets.png"/>
+                    </div>
+                    <div class="column">
+                        <img id="pellets7" src="assets/Pellets.png"/>
+                    </div>
+                    <div class="column">
+                        <img id="pellets8" src="assets/Pellets.png"/>
+                    </div>
+                </div>
+
+                <div class="clydeContainer">
+                <!--Green-->
+                <p id="clydeRole">Beat ghost enemies & get the prize</p>
+                <img id="greenGhost" src="assets/LargeGreenGhostStatic.png"/>
+                <span id="clyde">Clyde</span> 
+                </div>
+
+                <div class="row">
+                    <div class="column">
+                        <img id="pellets9" src="assets/Pellets.png"/>
+                    </div>
+                    <div class="column">
+                        <img id="pellets10" src="assets/Pellets.png"/>
+                    </div>
+                    <div class="column">
+                        <img id="pellets11" src="assets/Pellets.png"/>
+                    </div>
+                </div>
+
+                <div class="winkyContainer">
+                <!--Purple-->
+                <span id="winky">Winky</span> 
+                <img id="purpleGhost" src="assets/LargePurpleGhostStatic.png"/>
+                <p id="winkyRole">Defeat Pac-man first</p>
+                </div>
             </div>
         </div>
         <button id="back"><a href="index.html">Back</a></button>

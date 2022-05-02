@@ -903,7 +903,7 @@ function detectWall(){
     //console.log(dist(shared.px,shared.py,createWalls[0][0],createWalls[0][1]));
     for(let i = 0; i < createWalls.length; i++){
         if(shared.dir == 1 || shared.dir == 2){
-            if(dist(shared.px,shared.py,createWalls[i][0],createWalls[i][1]) < createWalls[i][2]/2){
+            if(dist(shared.px,shared.py,createWalls[i][0],createWalls[i][1]) <= createWalls[i][2]/2){
                 //vertical collision - make velocity 0
                 shared.vel = 0;
             }
@@ -913,7 +913,7 @@ function detectWall(){
         }
        //same for width
        if(shared.dir == 3 || shared.dir == 4){
-        if(dist(shared.px,shared.py,createWalls[i][0],createWalls[i][3]) < createWalls[i][4]/2){
+        if(dist(shared.px,shared.py,createWalls[i][0],createWalls[i][3]) <= createWalls[i][4]/2){
             //horizontal collision - make velocity 0
             shared.vel = 0;
         }

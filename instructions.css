@@ -1,0 +1,147 @@
+*{
+    padding: 0;
+    margin: 0;
+}
+
+@font-face {
+    font-family: pacmanFont;
+    src: url("assets/crackman.TTF");
+}
+
+@font-face {
+    font-family: lot;
+    src: url("assets/lot.otf");
+}
+
+html{
+    font-family: pacmanFont;
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+  }
+  
+  body{
+    background-image: url("assets/background.jpg");
+    background-repeat: no-repeat;
+    /* overflow: hidden; */
+    zoom: 100%;
+    zoom: normal;
+  }
+
+#infoBox{
+    font-size: 45px;
+    border: 2px solid white;
+    position: absolute;
+    top: 10vh;
+    left: 2vw;
+    color: white;
+    padding: 10px 10px;
+    background-color: black;
+ }
+
+ #controls{
+     font-size: 30px;
+     line-height: 40px;
+ }
+
+ #back{
+    font-family: pacmanFont;
+    font-size: 40px;
+    background-color: black;
+    color: white;
+    margin-left: 35px;
+    padding: 5px 5px;
+    margin-top: 820px;
+ }
+
+#back a{
+    color: white;
+    text-decoration: none;
+    padding: 20px;
+}
+
+#back a:hover{
+    color: yellow;
+    background-color: gray;
+} 
+
+ #instructions{
+    text-align: center;
+    color: white;
+    display: table; /* keep the background color wrapped tight */
+    margin: 0px auto 0px auto; /* keep the table centered */
+    padding:10px;
+    background-color:black;
+    border: 2px solid white;
+    font-size: 50px;
+    margin-top: 2px;
+}
+
+#span{
+    font-size: 20px;
+}
+
+.pacmanContainer,.blinkyContainer,.inkyContainer,.clydeContainer,.winkyContainer{
+    display: flex;
+}
+
+.blinkyContainer,.inkyContainer,.clydeContainer,.winkyContainer{
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+#pacman{
+    width: 50px;
+    padding-left: 40px;
+    padding-right: 5px;
+}
+
+#Pacman{
+    float: left;
+}
+
+#pacRole{
+    padding-top: 5px;
+    padding-right: 90px;
+    font-size: 40px;
+    float: right;
+}
+
+#blinkyRole,#clydeRole{
+    font-size: 40px;
+    padding-right: 10px;
+}
+
+#inkyRole,#winkyRole{
+    font-size: 40px;
+    padding-left: 30px;
+}
+
+#redGhost,#blueGhost,#greenGhost,#purpleGhost{
+    padding-left: 20px;
+    width: 60px;
+}
+
+#redGhost,#greenGhost{
+    padding-right: 20px;
+}
+
+#pellets,#pellets2,#pellets3,#pellets4,#pellets5,#pellets6,#pellets7,#pellets8,#pellets9,#pellets10,#pellets11{
+    width: 570px;
+}
+
+.row::after{
+    content: "";
+    clear: both;
+    display: table;
+}
+
+.column{
+    padding: 0;
+    margin: 0;
+    float: left;
+    /* width: 33.33%; */
+    display: table;
+}

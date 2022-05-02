@@ -56,13 +56,6 @@ html, body {
       left: 19.5vw;
   }
 
-  #instructions{
-      color: white;
-      font-size: 60px;
-      margin-left: 800px;
-      margin-top: 20px;
-  }
-
   button{
       font-family: pacmanFont;
       font-size: 40px;
@@ -104,11 +97,6 @@ html, body {
       background-color: gray;
   } 
 
-  #back{
-     margin-left: 50px;
-     padding: 5px 0;
-  }
-
   #original{
     font-size: 45px;
     position: absolute;
@@ -141,13 +129,3 @@ select#menu{
     margin-top: 135px;
 } 
 
-/*instructions.html*/
- #infoBox{
-    font-size: 40px;
-    border: 2px solid white;
-    position: absolute;
-    top: 18vh;
-    left: 25vw;
-    color: white;
-    background-color: black;
- }
