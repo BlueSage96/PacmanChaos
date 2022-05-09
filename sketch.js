@@ -11,20 +11,12 @@ let pacSize = 55;
 let ghostSize = 50;
 let spacing = 2;
 let isPaused = false;
-// let speed = 3;
-// let speedX = 0;
-// let speedY = 0;
-// let dir,red_dir,blue_dir,green_dir,purple_dir;
-// let thetaOff = 0;
-// let vel = 1;
+let hightlight = false;
 let pacman,instructions,link;
 let titleBackground,paused;
 let x = 10;
 let y = 300;
-// let px,py,vx,vy;//x & y velocity
-// let red_px,red_py,blue_px,blue_py,green_px,green_py,purple_px,purple_py,
-// red_vx, red_vy, blue_vx, blue_vy, green_vx, green_vy, purple_vx, purple_vy,
-// green_pathCount,purple_pathCount;
+
 let redGhostArray = [];
 let blueGhostArray = [];
 let greenGhostArray = [];
@@ -178,7 +170,7 @@ function setup(){
     teamDropDownMenu.position(1470,600);
     teamDropDownMenu.id("menu");
 
-    // if(partyIsHost){
+    if(partyIsHost){
         if(shared.player == 0){
             my.selectedTeam = "Pac-man";
         }
@@ -197,7 +189,7 @@ function setup(){
         else{
             my.selectedTeam = "Observer";
         }
-    // }
+    }
     
     // When an option is chosen, assign it to my.selectedTeam
     teamDropDownMenu.changed(() =>{
@@ -286,10 +278,10 @@ function game(){
     //purple ghost
     drawPurpleGhost();
     purpleGhostControls();
-
+    //console.log(dist(shared.px,shared.py,createWalls[0][0],createWalls[0][1]));
     // definePath();
 
-     detectWall();
+    detectWall();
     // chaosMode();
     //pacman appears on the other side of the screen when out of bounds
     shared.px = (shared.px + width) % width;
@@ -402,21 +394,18 @@ function tokens(){
     for(let j = 1; j <= row; j++){
        cx = centerX(i);
        cy = centerY(j);
-       //splice(list, value, position)
-       path[j][i] = 2;
-
-       if(path[j][i] == 2){
-         // path[i].splice(j,1);
+       for(let i = 0; i < createWalls.length; i++){}
+        //see if walls x & y is the same as the create walls
+           //loop through walls and see if
+          //only create eggs if there is not a wall in location - centerX, centerY
           fill(ballCol);
-          let drawEgg = ellipse(cx,cy,25,25);
-          eggs.push(drawEgg);
-        //   if(dist(shared.px,shared.py,createWalls[i][0],createWalls[i][1]) < createWalls[i][2]/2){
-            
-        // }
+          ellipse(cx,cy,25,25);
+       
+         eggs.push([cx,cy]);
+        
        }
     }
-  }
-  console.log(eggs);
+  //console.log(eggs);
 }
 
 //define the array of the map
@@ -537,30 +526,34 @@ function pacmanControls(){
     if(my.selectedTeam == "Pac-man"){
         //have to speed instead of speedX & speedY
         //Up arrow or W
-        if(keyIsDown(UP_ARROW) || keyIsDown(87)){
-            shared.vx = 0;
-            shared.vy = -shared.vel * shared.speed;
-            shared.dir = 1;
-        }
-        //down arrow or S
-        if(keyIsDown(DOWN_ARROW) || keyIsDown(83)){
-            shared.vx = 0;
-            shared.vy = shared.vel * shared.speed;
-            shared.dir = 2;
-        }
-        //left arrow & A
-        if(keyIsDown(LEFT_ARROW) || keyIsDown(65)){
-            shared.vx = -shared.vel * shared.speed;
-            shared.vy = 0;
-            shared.dir = 3;
-        }
-        //right arrow or D
-        if(keyIsDown(RIGHT_ARROW) || keyIsDown(68)){
-            shared.vx = shared.vel * shared.speed;
-            shared.vy = 0;
-            shared.dir = 4;
-        }
+
+          
+    //vertical collision - make velocity 0
+    if(keyIsDown(UP_ARROW) || keyIsDown(87)){
+        shared.vx = 0;
+        shared.vy = -shared.vel * shared.speed;
+        shared.dir = 1;
     }
+    //down arrow or S
+    if(keyIsDown(DOWN_ARROW) || keyIsDown(83)){
+        shared.vx = 0;
+        shared.vy = shared.vel * shared.speed;
+        shared.dir = 2;
+    }
+    //left arrow & A
+    if(keyIsDown(LEFT_ARROW) || keyIsDown(65)){
+        shared.vx = -shared.vel * shared.speed;
+        shared.vy = 0;
+        shared.dir = 3;
+    }
+    //right arrow or D
+    if(keyIsDown(RIGHT_ARROW) || keyIsDown(68)){
+        shared.vx = shared.vel * shared.speed;
+        shared.vy = 0;
+        shared.dir = 4;
+    }
+    }
+
 }
 
 //Red Ghost
@@ -902,25 +895,37 @@ function detectWall(){
     */
     //console.log(dist(shared.px,shared.py,createWalls[0][0],createWalls[0][1]));
     for(let i = 0; i < createWalls.length; i++){
-        if(shared.dir == 1 || shared.dir == 2){
-            if(dist(shared.px,shared.py,createWalls[i][0],createWalls[i][1]) <= createWalls[i][2]/2){
-                //vertical collision - make velocity 0
-                shared.vel = 0;
-            }
-            else{
-                shared.vel = 1;
+        //top wall
+        if(shared.py < createWalls[0][i] || shared.py > height - createWalls[0][i]){
+            if(shared.px > createWalls[i][0] && shared.px < createWalls[i][0] + width){
+                shared.px = -shared.px;
+                shared.py = -shared.py;
+
+                hightlight = true;
+                return true;
             }
         }
-       //same for width
-       if(shared.dir == 3 || shared.dir == 4){
-        if(dist(shared.px,shared.py,createWalls[i][0],createWalls[i][3]) <= createWalls[i][4]/2){
-            //horizontal collision - make velocity 0
-            shared.vel = 0;
-        }
-         else{
-             shared.vel = 1;
-         }
-       } 
+        hightlight = false;
+        return false;
+    //     if(shared.dir == 1 || shared.dir == 2){
+    //         if(dist(shared.px,shared.py,createWalls[i][0],createWalls[i][1]) <= createWalls[i][2]/2){
+    //             //vertical collision - make velocity 0
+    //             shared.vel = -shared.vel * shared.speed;
+    //         }
+    //         //console.log(shared.vel);
+    //     }
+    //    //same for width
+    //    if(shared.dir == 3 || shared.dir == 4){
+    //     if(dist(shared.px,shared.py,createWalls[i][0],createWalls[i][3]) <= createWalls[i][4]/2){
+    //         //horizontal collision - make velocity 0
+    //         shared.vel = -shared.vel * shared.speed;
+    //     }
+    //    } 
+    }
+
+    if(hightlight){
+      fill(255,0,0);
+      console.log("Hit wall");
     }
 }
 

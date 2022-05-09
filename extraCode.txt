@@ -78,6 +78,17 @@
         }
     }
 
+//global single player variables
+// let speed = 3;
+// let speedX = 0;
+// let speedY = 0;
+// let dir,red_dir,blue_dir,green_dir,purple_dir;
+// let thetaOff = 0;
+// let vel = 1;
+// let px,py,vx,vy;//x & y velocity
+// let red_px,red_py,blue_px,blue_py,green_px,green_py,purple_px,purple_py,
+// red_vx, red_vy, blue_vx, blue_vy, green_vx, green_vy, purple_vx, purple_vy,
+// green_pathCount,purple_pathCount;
 //may cause issues later
 // transform a cell's index into on-screen coordinates
 // function positionX(px){
