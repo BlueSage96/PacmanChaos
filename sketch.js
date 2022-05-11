@@ -108,17 +108,17 @@ function setup(){
         partySetShared(shared,{
             player: 0,
             //initialize pacman
-            px: centerX(6),
-            py: centerY(7),
-            vx: 0,
-            vy: 0,
-            speed: 3,
-            speedX: 0,
-            speedY: 0,
-            dir: 0,
-            vel: 1,
-            thetaOff: 0,
-            theta: 0,
+            // px: centerX(6),
+            // py: centerY(7),
+            // vx: 0,
+            // vy: 0,
+            // speed: 3,
+            // speedX: 0,
+            // speedY: 0,
+            // dir: 0,
+            // vel: 1,
+            // thetaOff: 0,
+            // theta: 0,
 
             //red ghost
             red_px: ghostCenterX(5),
@@ -194,17 +194,17 @@ function setup(){
       if(participants.length == 1){
         my.selectedTeam = "Pac-man";
         //initialize pacman
-        // my.px = centerX(6);
-        // my.py =  centerY(7);
-        // my.vx = 0;
-        // my.vy =  0;
-        // my.speed = 3;
-        // my.speedX = 0;
-        // my.speedY = 0;
-        // my.dir = 0;
-        // my.vel = 1;
-        // my.thetaOff = 0;
-        // my.theta = 0;
+        my.px = centerX(6);
+        my.py =  centerY(7);
+        my.vx = 0;
+        my.vy =  0;
+        my.speed = 3;
+        my.speedX = 0;
+        my.speedY = 0;
+        my.dir = 0;
+        my.vel = 1;
+        my.thetaOff = 0;
+        my.theta = 0;
      }
      else if(participants.length == 2){
         my.selectedTeam = "Red Ghost";
@@ -281,14 +281,14 @@ function waitForHost(){
     textSize(40);
     fill(255);
     if(partyIsHost()){
-      text("You're the host" + "\n" + "Press ENTER to start", 500,300);
+      text("You're the host" + "\n" + "Press ENTER to start",300,300);
       if(keyCode == 13){
           shared.hostStart = true;
           scene = 2;
       }
     }
     else if(!partyIsHost()){
-        text("Waiting for the host", 500,300);
+        text("Waiting for the host",300,300);
         if(shared.hostStart == true){
             scene = 2;
         }
@@ -422,10 +422,10 @@ function tokens(){
        cx = centerX(i);
        cy = centerY(j);
        for(let i = 0; i < createWalls.length; i++){
-        //see if walls x & y is the same as the create walls
+            //see if walls x & y is the same as the create walls
            //loop through walls and see if
-          //only create eggs if there is not a wall in location - centerX, centerY
-            if(cx > createWalls[i][0] || cy < createWalls[0][i]){
+           //only create eggs if there is not a wall in location - centerX, centerY
+            if(cx <= createWalls[i][0] || cy >= createWalls[i][1]){
                 fill(ballCol);
                 ellipse(cx,cy,25,25);
             }
@@ -485,125 +485,129 @@ function ghostCenterY(row){
 }
 //pacman
 function drawPlayers(){
-    // for(pc in participants){
-    //     fill(pacmanCol);
-    //     stroke(0);
-    //     strokeWeight(3);
-    //     pc.theta = PI / 3 * sq(sin(pc.thetaOff));//chomping
-    
-    //     if(pc.speedY < 0){
-    //         arc(pc.px,pc.py,pacSize,pacSize, -pc.theta - PI / 6, pc.theta + 7 * PI / 6);
-    //     }
-    
-    //     else if(pc.speedY > 0){
-    //         arc(pc.px,pc.py,pacSize,pacSize, -7 * PI /6 - pc.theta, pc.theta + PI / 6);
-    //     }
-    
-    //     else if(pc.speedX < 0){
-    //         arc(pc.px,pc.py,pacSize,pacSize, pc.theta + PI, -pc.theta + PI);
-    //     }
-    
-    //     else if(pc.speedX > 0){
-    //         arc(pc.px,pc.py,pacSize,pacSize,pc.theta,-pc.theta);
-    //     }
-    
-    //     else{
-    //         //up
-    //         if(pc.dir == 1){
-    //             arc(pc.px,pc.py,pacSize,pacSize,-pc.theta - PI / 6, pc.theta + 7 * PI / 6);
-    //             //eyes
-    //             fill(0);
-    //             ellipse(pc.px+12,pc.py,10,10);
-    //         }
-    //         //down
-    //         else if(pc.dir == 2){
-    //             arc(pc.px,pc.py,pacSize,pacSize,-7 * PI / 6 - pc.theta, pc.theta + PI / 6);
-    //             //eyes
-    //             fill(0);
-    //             ellipse(pc.px+12,pc.py,10,10);
-    //         }
-    //         //left
-    //         else if(pc.dir == 3){
-    //             arc(pc.px,pc.py,pacSize,pacSize,pc.theta + PI, -pc.theta + PI);
-    //             //eyes
-    //             fill(0);
-    //             ellipse(pc.px,pc.py-12, 10,10);
-    //         }
-    //         //right
-    //         else if(pc.dir == 4){
-    //             arc(pc.px,pc.py,pacSize,pacSize,pc.theta,-pc.theta);
-    //             //eyes
-    //             fill(0);
-    //             ellipse(pc.px,pc.py-12,10,10);
-    //         }
-    //         else{
-    //             arc(pc.px,pc.py,pacSize,pacSize,pc.theta,-pc.theta);
-    //             //eyes
-    //             fill(0);
-    //             ellipse(pc.px,pc.py-12,10,10);
-    //         }
-    //     }
-    //     shared.thetaOff += 0.1;//mouth movement
-    // }
-    //pacman
     fill(pacmanCol);
     stroke(0);
     strokeWeight(3);
-    shared.theta = PI / 3 * sq(sin(shared.thetaOff));//chomping
-
-    if(shared.speedY < 0){
-        arc(shared.px,shared.py,pacSize,pacSize, -shared.theta - PI / 6, shared.theta + 7 * PI / 6);
-    }
-
-    else if(shared.speedY > 0){
-        arc(shared.px,shared.py,pacSize,pacSize, -7 * PI /6 - shared.theta, shared.theta + PI / 6);
-    }
-
-    else if(shared.speedX < 0){
-        arc(shared.px,shared.py,pacSize,pacSize, shared.theta + PI, -shared.theta + PI);
-    }
-
-    else if(shared.speedX > 0){
-        arc(shared.px,shared.py,pacSize,pacSize,shared.theta,-shared.theta);
-    }
-
-    else{
-        //up
-        if(shared.dir == 1){
-            arc(shared.px,shared.py,pacSize,pacSize,-shared.theta - PI / 6, shared.theta + 7 * PI / 6);
-            //eyes
-            fill(0);
-            ellipse(shared.px+12,shared.py,10,10);
+    for(let i = 0; i < participants.length; i++){
+        if(participants.length == 1){
+       
+        my.theta = PI / 3 * sq(sin(my.thetaOff));//chomping
+    
+        if(my.speedY < 0){
+            arc(my.px,my.py,pacSize,pacSize, -my.theta - PI / 6, my.theta + 7 * PI / 6);
         }
-        //down
-        else if(shared.dir == 2){
-            arc(shared.px,shared.py,pacSize,pacSize,-7 * PI / 6 - shared.theta, shared.theta + PI / 6);
-            //eyes
-            fill(0);
-            ellipse(shared.px+12,shared.py,10,10);
+    
+        else if(my.speedY > 0){
+            arc(my.px,my.py,pacSize,pacSize, -7 * PI /6 - my.theta, my.theta + PI / 6);
         }
-        //left
-        else if(shared.dir == 3){
-            arc(shared.px,shared.py,pacSize,pacSize,shared.theta + PI, -shared.theta + PI);
-            //eyes
-            fill(0);
-            ellipse(shared.px,shared.py-12, 10,10);
+    
+        else if(my.speedX < 0){
+            arc(my.px,my.py,pacSize,pacSize, my.theta + PI, -my.theta + PI);
         }
-        //right
-        else if(shared.dir == 4){
-            arc(shared.px,shared.py,pacSize,pacSize,shared.theta,-shared.theta);
-            //eyes
-            fill(0);
-            ellipse(shared.px,shared.py-12,10,10);
+    
+        else if(my.speedX > 0){
+            arc(my.px,my.py,pacSize,pacSize,my.theta,-my.theta);
         }
+    
         else{
-            arc(shared.px,shared.py,pacSize,pacSize,shared.theta,-shared.theta);
-            //eyes
-            fill(0);
-            ellipse(shared.px,shared.py-12,10,10);
+            //up
+            if(my.dir == 1){
+                arc(my.px,my.py,pacSize,pacSize,-my.theta - PI / 6, my.theta + 7 * PI / 6);
+                //eyes
+                fill(0);
+                ellipse(my.px+12,my.py,10,10);
+            }
+            //down
+            else if(my.dir == 2){
+                arc(my.px,my.py,pacSize,pacSize,-7 * PI / 6 - my.theta, my.theta + PI / 6);
+                //eyes
+                fill(0);
+                ellipse(my.px+12,my.py,10,10);
+            }
+            //left
+            else if(my.dir == 3){
+                arc(my.px,my.py,pacSize,pacSize,my.theta + PI, -my.theta + PI);
+                //eyes
+                fill(0);
+                ellipse(my.px,my.py-12, 10,10);
+            }
+            //right
+            else if(my.dir == 4){
+                arc(my.px,my.py,pacSize,pacSize,my.theta,-my.theta);
+                //eyes
+                fill(0);
+                ellipse(my.px,my.py-12,10,10);
+            }
+            else{
+                arc(my.px,my.py,pacSize,pacSize,my.theta,-my.theta);
+                //eyes
+                fill(0);
+                ellipse(my.px,my.py-12,10,10);
+            }
         }
+        shared.thetaOff += 0.1;//mouth movement
+      }
+      console.log(my.px);
     }
-    shared.thetaOff += 0.1;//mouth movement
+    //pacman
+    // fill(pacmanCol);
+    // stroke(0);
+    // strokeWeight(3);
+    // shared.theta = PI / 3 * sq(sin(shared.thetaOff));//chomping
+
+    // if(shared.speedY < 0){
+    //     arc(shared.px,shared.py,pacSize,pacSize, -shared.theta - PI / 6, shared.theta + 7 * PI / 6);
+    // }
+
+    // else if(shared.speedY > 0){
+    //     arc(shared.px,shared.py,pacSize,pacSize, -7 * PI /6 - shared.theta, shared.theta + PI / 6);
+    // }
+
+    // else if(shared.speedX < 0){
+    //     arc(shared.px,shared.py,pacSize,pacSize, shared.theta + PI, -shared.theta + PI);
+    // }
+
+    // else if(shared.speedX > 0){
+    //     arc(shared.px,shared.py,pacSize,pacSize,shared.theta,-shared.theta);
+    // }
+
+    // else{
+    //     //up
+    //     if(shared.dir == 1){
+    //         arc(shared.px,shared.py,pacSize,pacSize,-shared.theta - PI / 6, shared.theta + 7 * PI / 6);
+    //         //eyes
+    //         fill(0);
+    //         ellipse(shared.px+12,shared.py,10,10);
+    //     }
+    //     //down
+    //     else if(shared.dir == 2){
+    //         arc(shared.px,shared.py,pacSize,pacSize,-7 * PI / 6 - shared.theta, shared.theta + PI / 6);
+    //         //eyes
+    //         fill(0);
+    //         ellipse(shared.px+12,shared.py,10,10);
+    //     }
+    //     //left
+    //     else if(shared.dir == 3){
+    //         arc(shared.px,shared.py,pacSize,pacSize,shared.theta + PI, -shared.theta + PI);
+    //         //eyes
+    //         fill(0);
+    //         ellipse(shared.px,shared.py-12, 10,10);
+    //     }
+    //     //right
+    //     else if(shared.dir == 4){
+    //         arc(shared.px,shared.py,pacSize,pacSize,shared.theta,-shared.theta);
+    //         //eyes
+    //         fill(0);
+    //         ellipse(shared.px,shared.py-12,10,10);
+    //     }
+    //     else{
+    //         arc(shared.px,shared.py,pacSize,pacSize,shared.theta,-shared.theta);
+    //         //eyes
+    //         fill(0);
+    //         ellipse(shared.px,shared.py-12,10,10);
+    //     }
+    // }
+    // shared.thetaOff += 0.1;//mouth movement
 
     //red ghost
     if(shared.red_speedY < 0){
@@ -763,7 +767,7 @@ function drawPlayers(){
 }
 
 function controls(){
-    // for(pc in participants){
+    // for(my in participants){
     //       // if we are moving left && we aren't against left wall
     // if (shared.vx < 0 && shared.px > 50) {
     //     shared.px += shared.vx;
@@ -811,27 +815,27 @@ function controls(){
     //     //Up arrow or W
     //     //vertical collision - make velocity 0
     //     if(keyIsDown(UP_ARROW) || keyIsDown(87)){
-    //         pc.vx = 0;
-    //         pc.vy = -pc.vel * pc.speed;
-    //         pc.dir = 1;
+    //         my.vx = 0;
+    //         my.vy = -my.vel * my.speed;
+    //         my.dir = 1;
     //     }
     //     //down arrow or S
     //     if(keyIsDown(DOWN_ARROW) || keyIsDown(83)){
-    //         pc.vx = 0;
-    //         pc.vy = pc.vel * pc.speed;
-    //         pc.dir = 2;
+    //         my.vx = 0;
+    //         my.vy = my.vel * my.speed;
+    //         my.dir = 2;
     //     }
     //     //left arrow & A
     //     if(keyIsDown(LEFT_ARROW) || keyIsDown(65)){
-    //         pc.vx = -pc.vel * pc.speed;
-    //         pc.vy = 0;
-    //         pc.dir = 3;
+    //         my.vx = -my.vel * my.speed;
+    //         my.vy = 0;
+    //         my.dir = 3;
     //     }
     //     //right arrow or D
     //     if(keyIsDown(RIGHT_ARROW) || keyIsDown(68)){
-    //         pc.vx = pc.vel * pc.speed;
-    //         pc.vy = 0;
-    //         pc.dir = 4;
+    //         my.vx = my.vel * my.speed;
+    //         my.vy = 0;
+    //         my.dir = 4;
     //     }
     // }
 
