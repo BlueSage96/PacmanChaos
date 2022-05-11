@@ -1,6 +1,6 @@
 let my,shared,pacmanFont;
 let marginVert,marginHori,col,row;
-let obstacles, borders, ballCol,pacmanCol;
+let obstacles, borders, ballCol,pacmanCol,redCol,blueCol,greenCol,purpleCol;
 let path = [];
 let wasHere = [];
 let createWalls = [];
@@ -25,7 +25,7 @@ let purpleGhostArray = [];
 function preload(){
     partyConnect(
         "wss://deepstream-server-1.herokuapp.com",
-        "Pacman_Chaos_LocalRun3",
+        "Pacman_Chaos_basic",
         "main1"
       );
     shared = partyLoadShared("globals");
@@ -81,25 +81,22 @@ function setup(){
    
     marginVert = Math.floor((width - col * size) / 2);
     marginHori = Math.floor((height - row * size) / 2);
+
     //change colors - or make them random
     obstacles = color(50,0,200);
     borders = color(80,60,200);
     ballCol = color(255);
     pacmanCol = color(254,213,0);
+    redCol = color(255,0,0);
+    blueCol = color(0,0,255);
+    greenCol = color(0,255,0);
+    purpleCol = color(255,0,255);
+
     link = createA("instructions.html","");
 
     instructions = createImg("assets/icon.png","instructions.html").parent(link);
     instructions.position(1350,50);
     instructions.size(60,60);
-
-    // for(let i = 0; i < col; i++){
-    //     path[i] = [];
-    //     wasHere[i] = [];
-    //    for(let j = 0; j < row; j++){
-    //       path[i][j] = [[col + 2][row + 2]];
-    //     //   wasHere[i][j] = [[col + 2][row + 2]];
-    //    }
-    // }
         //toggle server info
     partyToggleInfo(false);
     toggle = document.getElementById('toggle');
@@ -107,64 +104,7 @@ function setup(){
     if(partyIsHost()){
         partySetShared(shared,{
             player: 0,
-            //initialize pacman
-            // px: centerX(6),
-            // py: centerY(7),
-            // vx: 0,
-            // vy: 0,
-            // speed: 3,
-            // speedX: 0,
-            // speedY: 0,
-            // dir: 0,
-            // vel: 1,
-            // thetaOff: 0,
-            // theta: 0,
-
-            //red ghost
-            red_px: ghostCenterX(5),
-            red_py: ghostCenterY(4),
-            red_vx: 0,
-            red_vy: 0,
-            red_speed: 3,
-            red_speedX: 0,
-            red_speedY: 0,
-            red_dir: 0,
-            red_vel: 1,
-
-            //blue
-            blue_px: ghostCenterX(6),
-            blue_py: ghostCenterY(4),
-            blue_vx: 0,
-            blue_vy: 0,
-            blue_speed: 3,
-            blue_speedX: 0,
-            blue_speedY: 0,
-            blue_dir: 0,
-            blue_vel: 1,
-
-            //green
-            green_px: ghostCenterX(5),
-            green_py: ghostCenterY(5),
-            green_vx: 0,
-            green_vy: 0,
-            green_speed: 3,
-            green_speedX: 0,
-            green_speedY: 0,
-            green_dir: 0,
-            green_vel: 1,
-            green_pathCount: 0,
-
-            //purple
-            purple_px: ghostCenterX(6),//was col
-            purple_py: ghostCenterY(5),
-            purple_vx: 0,
-            purple_vy: 0,
-            purple_speed: 3,
-            purple_speedX: 0,
-            purple_speedY: 0,
-            purple_dir: 0,
-            purple_vel: 1,
-            purple_pathCount: 0,
+            
 
             hostStart: false,
             hostRestart: false,
@@ -189,22 +129,48 @@ function setup(){
         my.selectedTeam = teamDropDownMenu.value();
     });
 
-     //using participants solves issues with players being able to control the same player at once
-    if(partyIsHost){
-      if(participants.length == 1){
+    /*using participants solves issues with players being able 
+    to control the same player at once*/
+    // for(let i = 0; i < participants.length; i++){
+
+    my.xchange = 0;
+    my.ychange = 0;
+    //pacman
+       // my.pCol = color(pacmanCol);
+    // my.x = 400;
+    // my.y = height - 320;
+    my.w = 60;
+    my.h = 60;
+    my.px = centerX(6);
+    my.py =  centerY(7);
+    my.vx = 0;
+    my.vy =  0;
+    my.speed = 3;
+    my.speedX = 0;
+    my.speedY = 0;
+    my.dir = 0;
+    my.vel = 1;
+    my.thetaOff = 0;
+    my.theta = 0;
+
+    //red ghost
+    my.rx = ghostCenterX(5);
+    my.ry = ghostCenterY(4);
+
+    //blue ghost
+    my.bx = ghostCenterX(6);
+    my.by = ghostCenterY(4);
+
+    //green ghost
+    my.gx = ghostCenterX(5);
+    my.gy = ghostCenterY(5);
+
+    //purple ghost
+    my.purpX = ghostCenterX(6);
+    my.purpY = ghostCenterY(5);
+
+     if(participants.length == 1){
         my.selectedTeam = "Pac-man";
-        //initialize pacman
-        my.px = centerX(6);
-        my.py =  centerY(7);
-        my.vx = 0;
-        my.vy =  0;
-        my.speed = 3;
-        my.speedX = 0;
-        my.speedY = 0;
-        my.dir = 0;
-        my.vel = 1;
-        my.thetaOff = 0;
-        my.theta = 0;
      }
      else if(participants.length == 2){
         my.selectedTeam = "Red Ghost";
@@ -222,7 +188,7 @@ function setup(){
         my.selectedTeam = "Observer";
      }
     }
-}
+// }
 
 function draw(){
     background(1);
@@ -248,19 +214,6 @@ function mousePressed(){
     }
 
     //exit or quit
-}
-
-function keyPressed(){
-    //P
-    // if(keyCode == 80){
-    //    // pause();
-    //     scene = 2;
-    //     isPaused = true;
-    // }
-    // else{
-    //     scene = 1;
-    //     isPaused = false;
-    // }
 }
 
 function startScreen(){
@@ -306,18 +259,6 @@ function game(){
     drawPlayers();
     controls();
 
-    // definePath();
-
-    //detectWall();
-    // chaosMode();
-    //pacman appears on the other side of the screen when out of bounds
-    // shared.px = (shared.px + width) % width;
-    // shared.py = (shared.py + height) % height;//temporary
-
-    // shared.red_px = (shared.red_px + width) % width;
-    // shared.blue_px = (shared.blue_px + width) % width;
-    // shared.green_px = (shared.green_px + width) % width;
-    // shared.purple_px = (shared.purple_px + width) % width;
 }
 
 function gameOver(){
@@ -436,38 +377,6 @@ function tokens(){
   //console.log(eggs);
 }
 
-//define the array of the map
-// function definePath(){
-//    for(let j = 0; j <= row + 1; j++){
-//        for(let i = 0; i <= col + 1; i++){
-//            if(get(centerX(i),centerY(j) != obstacles && wasHere[j][i] == false)){
-//                path[j][i] = 2;
-//            }
-//            if(i == 0 || j == 0 || i == col + 1 || j == row + 1){
-//                path[j][i] = 0;
-//            }
-//            if((i == 0 || i == col + 1) && j == 6){
-//                path[j][i] = 3;
-//            }
-//            if((i == 3 && j == 3) || (i == 12 && j == 3)){
-//                path[j][i] = 4;
-//            }
-//            if(wasHere[8][4] == false){
-//                path[8][4] = 4;
-//            }
-//            if(wasHere[8][4] == true){
-//             path[8][4] = 1;
-//         }
-//         if(wasHere[8][11] == false){
-//             path[8][11] = 4;
-//         }
-//         if(wasHere[8][11] == true){
-//          path[8][11] = 1;
-//      }
-//        }
-//    } 
-// }
-
 function centerX(col){
     return marginHori + (col - 0.5) * size;
 }
@@ -483,682 +392,64 @@ function ghostCenterX(col){
 function ghostCenterY(row){
     return marginVert + (row - 0.75) * size;
 }
+
+function moveX(steps){
+    my.xchange = steps;
+}
+
+function moveY(steps){
+    my.ychange = steps;
+}
+
 //pacman
+//find dist then check if it's less than something
 function drawPlayers(){
-    fill(pacmanCol);
-    stroke(0);
-    strokeWeight(3);
-    for(let i = 0; i < participants.length; i++){
-        if(participants.length == 1){
-       
-        my.theta = PI / 3 * sq(sin(my.thetaOff));//chomping
-    
-        if(my.speedY < 0){
-            arc(my.px,my.py,pacSize,pacSize, -my.theta - PI / 6, my.theta + 7 * PI / 6);
-        }
-    
-        else if(my.speedY > 0){
-            arc(my.px,my.py,pacSize,pacSize, -7 * PI /6 - my.theta, my.theta + PI / 6);
-        }
-    
-        else if(my.speedX < 0){
-            arc(my.px,my.py,pacSize,pacSize, my.theta + PI, -my.theta + PI);
-        }
-    
-        else if(my.speedX > 0){
-            arc(my.px,my.py,pacSize,pacSize,my.theta,-my.theta);
-        }
-    
-        else{
-            //up
-            if(my.dir == 1){
-                arc(my.px,my.py,pacSize,pacSize,-my.theta - PI / 6, my.theta + 7 * PI / 6);
-                //eyes
-                fill(0);
-                ellipse(my.px+12,my.py,10,10);
-            }
-            //down
-            else if(my.dir == 2){
-                arc(my.px,my.py,pacSize,pacSize,-7 * PI / 6 - my.theta, my.theta + PI / 6);
-                //eyes
-                fill(0);
-                ellipse(my.px+12,my.py,10,10);
-            }
-            //left
-            else if(my.dir == 3){
-                arc(my.px,my.py,pacSize,pacSize,my.theta + PI, -my.theta + PI);
-                //eyes
-                fill(0);
-                ellipse(my.px,my.py-12, 10,10);
-            }
-            //right
-            else if(my.dir == 4){
-                arc(my.px,my.py,pacSize,pacSize,my.theta,-my.theta);
-                //eyes
-                fill(0);
-                ellipse(my.px,my.py-12,10,10);
-            }
-            else{
-                arc(my.px,my.py,pacSize,pacSize,my.theta,-my.theta);
-                //eyes
-                fill(0);
-                ellipse(my.px,my.py-12,10,10);
-            }
-        }
-        shared.thetaOff += 0.1;//mouth movement
-      }
-      console.log(my.px);
-    }
-    //pacman
-    // fill(pacmanCol);
-    // stroke(0);
-    // strokeWeight(3);
-    // shared.theta = PI / 3 * sq(sin(shared.thetaOff));//chomping
+   for(const p of participants){
+    //pac-man
+        fill(pacmanCol);
+        ellipse(p.px,p.py,p.w,p.h);
 
-    // if(shared.speedY < 0){
-    //     arc(shared.px,shared.py,pacSize,pacSize, -shared.theta - PI / 6, shared.theta + 7 * PI / 6);
-    // }
+        fill(redCol);
+        ellipse(p.rx,p.ry,p.w,p.h);
 
-    // else if(shared.speedY > 0){
-    //     arc(shared.px,shared.py,pacSize,pacSize, -7 * PI /6 - shared.theta, shared.theta + PI / 6);
-    // }
+        fill(blueCol);
+        ellipse(p.bx,p.by,p.w,p.h);
 
-    // else if(shared.speedX < 0){
-    //     arc(shared.px,shared.py,pacSize,pacSize, shared.theta + PI, -shared.theta + PI);
-    // }
+        fill(greenCol);
+        ellipse(p.gx,p.gy,p.w,p.h);
 
-    // else if(shared.speedX > 0){
-    //     arc(shared.px,shared.py,pacSize,pacSize,shared.theta,-shared.theta);
-    // }
-
-    // else{
-    //     //up
-    //     if(shared.dir == 1){
-    //         arc(shared.px,shared.py,pacSize,pacSize,-shared.theta - PI / 6, shared.theta + 7 * PI / 6);
-    //         //eyes
-    //         fill(0);
-    //         ellipse(shared.px+12,shared.py,10,10);
-    //     }
-    //     //down
-    //     else if(shared.dir == 2){
-    //         arc(shared.px,shared.py,pacSize,pacSize,-7 * PI / 6 - shared.theta, shared.theta + PI / 6);
-    //         //eyes
-    //         fill(0);
-    //         ellipse(shared.px+12,shared.py,10,10);
-    //     }
-    //     //left
-    //     else if(shared.dir == 3){
-    //         arc(shared.px,shared.py,pacSize,pacSize,shared.theta + PI, -shared.theta + PI);
-    //         //eyes
-    //         fill(0);
-    //         ellipse(shared.px,shared.py-12, 10,10);
-    //     }
-    //     //right
-    //     else if(shared.dir == 4){
-    //         arc(shared.px,shared.py,pacSize,pacSize,shared.theta,-shared.theta);
-    //         //eyes
-    //         fill(0);
-    //         ellipse(shared.px,shared.py-12,10,10);
-    //     }
-    //     else{
-    //         arc(shared.px,shared.py,pacSize,pacSize,shared.theta,-shared.theta);
-    //         //eyes
-    //         fill(0);
-    //         ellipse(shared.px,shared.py-12,10,10);
-    //     }
-    // }
-    // shared.thetaOff += 0.1;//mouth movement
-
-    //red ghost
-    if(shared.red_speedY < 0){
-        image(redGhostArray[0],shared.red_px,shared.red_py,ghostSize,ghostSize);
-      }
-  
-      else if(shared.red_speedY > 0){
-         image(redGhostArray[3],shared.red_px,shared.red_py,ghostSize,ghostSize);
-      }
-  
-      else if(shared.red_speedX < 0){
-         image(redGhostArray[0],shared.red_px,shared.red_py,ghostSize,ghostSize);
-      }
-  
-      else if(shared.red_speedX > 0){
-          image(redGhostArray[2],shared.red_px,shared.red_py,ghostSize,ghostSize);
-      }
-  
-      else{
-          //up
-          if(shared.red_dir == 1){
-             image(redGhostArray[3],shared.red_px,shared.red_py,ghostSize,ghostSize);
-          }
-          //down
-          else if(shared.red_dir == 2){
-             image(redGhostArray[4],shared.red_px,shared.red_py,ghostSize,ghostSize);
-          }
-          //left
-          else if(shared.red_dir == 3){
-             image(redGhostArray[1],shared.red_px,shared.red_py,ghostSize,ghostSize);
-          }
-          //right
-          else if(shared.red_dir == 4){
-             image(redGhostArray[2],shared.red_px,shared.red_py,ghostSize,ghostSize);
-          }
-          else if (shared.red_dir == 0){
-              image(redGhostArray[0],shared.red_px,shared.red_py,ghostSize,ghostSize);
-          }
-      }
-
-      //blue ghost
-      if(shared.blue_speedY < 0){
-        image(blueGhostArray[0],shared.blue_px,shared.blue_py,ghostSize,ghostSize);
-      }
-  
-      else if(shared.blue_speedY > 0){
-         image(blueGhostArray[2],shared.blue_px,shared.blue_py,ghostSize,ghostSize);
-      }
-  
-      else if(shared.blue_speedX < 0){
-         image(blueGhostArray[0],shared.blue_px,shared.blue_py,ghostSize,ghostSize);
-      }
-  
-      else if(shared.blue_speedX > 0){
-          image(blueGhostArray[2],shared.blue_px,shared.blue_py,ghostSize,ghostSize);
-      }
-  
-      else{
-          //up
-          if(shared.blue_dir == 1){
-             image(blueGhostArray[3],shared.blue_px,shared.blue_py,ghostSize,ghostSize);
-          }
-          //down
-          else if(shared.blue_dir == 2){
-             image(blueGhostArray[4],shared.blue_px,shared.blue_py,ghostSize,ghostSize);
-          }
-          //left
-          else if(shared.blue_dir == 3){
-             image(blueGhostArray[1],shared.blue_px,shared.blue_py,ghostSize,ghostSize);
-          }
-          //right
-          else if(shared.blue_dir == 4){
-             image(blueGhostArray[2],shared.blue_px,shared.blue_py,ghostSize,ghostSize);
-          }
-          else{
-              image(blueGhostArray[0],shared.blue_px,shared.blue_py,ghostSize,ghostSize);
-          }
-      }
-
-      //green ghost
-      if(shared.green_speedY < 0){
-        image(greenGhostArray[0],shared.green_px,shared.green_py,ghostSize,ghostSize);
-      }
-  
-      else if(shared.green_speedY > 0){
-         image(greenGhostArray[0],shared.green_px,shared.green_py,ghostSize,ghostSize);
-      }
-  
-      else if(shared.green_speedX < 0){
-         image(greenGhostArray[0],shared.green_px,shared.green_py,ghostSize,ghostSize);
-      }
-  
-      else if(shared.green_speedX > 0){
-          image(greenGhostArray[0],shared.green_px,shared.green_py,ghostSize,ghostSize);
-      }
-  
-      else{
-          //up
-          if(shared.green_dir == 1){
-             image(greenGhostArray[3],shared.green_px,shared.green_py,ghostSize,ghostSize);
-          }
-          //down
-          else if(shared.green_dir == 2){
-             image(greenGhostArray[4],shared.green_px,shared.green_py,ghostSize,ghostSize);
-          }
-          //left
-          else if(shared.green_dir == 3){
-             image(greenGhostArray[1],shared.green_px,shared.green_py,ghostSize,ghostSize);
-          }
-          //right
-          else if(shared.green_dir == 4){
-             image(greenGhostArray[2],shared.green_px,shared.green_py,ghostSize,ghostSize);
-          }
-          else{
-              image(greenGhostArray[0],shared.green_px,shared.green_py,ghostSize,ghostSize);
-          }
-      }
-
-      //purple ghost
-      if(shared.purple_speedY < 0){
-        image(purpleGhostArray[0],shared.purple_px,shared.purple_py,ghostSize,ghostSize);
-      }
-  
-      else if(shared.purple_speedY > 0){
-         image(purpleGhostArray[2],shared.purple_px,shared.purple_py,ghostSize,ghostSize);
-      }
-  
-      else if(shared.purple_speedX < 0){
-         image(purpleGhostArray[0],shared.purple_px,shared.purple_py,ghostSize,ghostSize);
-      }
-  
-      else if(shared.purple_speedX > 0){
-          image(purpleGhostArray[2],shared.purple_px,shared.purple_py,ghostSize,ghostSize);
-      }
-  
-      else{
-          //up
-          if(shared.purple_dir == 1){
-             image(purpleGhostArray[3],shared.purple_px,shared.purple_py,ghostSize,ghostSize);
-          }
-          //down
-          else if(shared.purple_dir == 2){
-             image(purpleGhostArray[4],shared.purple_px,shared.purple_py,ghostSize,ghostSize);
-          }
-          //left
-          else if(shared.purple_dir == 3){
-             image(purpleGhostArray[1],shared.purple_px,shared.purple_py,ghostSize,ghostSize);
-          }
-          //right
-          else if(shared.purple_dir == 4){
-             image(purpleGhostArray[2],shared.purple_px,shared.purple_py,ghostSize,ghostSize);
-          }
-          else{
-              image(purpleGhostArray[0],shared.purple_px,shared.purple_py,ghostSize,ghostSize);
-          }
-      }
+        fill(purpleCol);
+        ellipse(p.purpX,p.purpY,p.w,p.h);
+   }
 }
 
 function controls(){
-    // for(my in participants){
-    //       // if we are moving left && we aren't against left wall
-    // if (shared.vx < 0 && shared.px > 50) {
-    //     shared.px += shared.vx;
-    //     if(width < 50){
-    //         shared.px = (shared.px + width) % width;
-    //     }
-    // }
-
-    // // if we are moving right && we aren't against right wall
-    // if (shared.vx > 0 && shared.px < 1035) {
-    //     shared.px += shared.vx;
-    // }
-
-    // //top wall
-    // if(shared.vy < 0 && shared.py > 50){
-    //     shared.py += shared.vy;
-    // }
-
-    // //bottom wall
-    // if(shared.vy > 0 && shared.py < 850){
-    //     shared.py += shared.vy;
-    // }
-    // // shared.px += shared.vx;
-
-    // shared.vx = 0;
-    // shared.vy = 0;
-
-    // //collision detection with in game walls
-    // for(let i = 0; i < createWalls.length; i++){
-    //     //top wall
-    //     if(shared.py < createWalls[i][0] || shared.py > height - createWalls[i][3]){
-    //         if(shared.px > createWalls[i][0] && shared.px < createWalls[i][3] + width){
-    //             shared.px -= shared.vx;
-    //             shared.py -= shared.vy;
-    //             // hightlight = true;
-    //             // return true;
-    //         }
-    //     }
-    //     // hightlight = false;
-    //     // return false;
-    // }
-
-    // if(my.selectedTeam == "Pac-man"){
-    //     //have to speed instead of speedX & speedY
-    //     //Up arrow or W
-    //     //vertical collision - make velocity 0
-    //     if(keyIsDown(UP_ARROW) || keyIsDown(87)){
-    //         my.vx = 0;
-    //         my.vy = -my.vel * my.speed;
-    //         my.dir = 1;
-    //     }
-    //     //down arrow or S
-    //     if(keyIsDown(DOWN_ARROW) || keyIsDown(83)){
-    //         my.vx = 0;
-    //         my.vy = my.vel * my.speed;
-    //         my.dir = 2;
-    //     }
-    //     //left arrow & A
-    //     if(keyIsDown(LEFT_ARROW) || keyIsDown(65)){
-    //         my.vx = -my.vel * my.speed;
-    //         my.vy = 0;
-    //         my.dir = 3;
-    //     }
-    //     //right arrow or D
-    //     if(keyIsDown(RIGHT_ARROW) || keyIsDown(68)){
-    //         my.vx = my.vel * my.speed;
-    //         my.vy = 0;
-    //         my.dir = 4;
-    //     }
-    // }
-
-    // }
-    // // if we are moving left && we aren't against left wall
-    if (shared.vx < 0 && shared.px > 50) {
-        shared.px += shared.vx;
-        if(width < 50){
-            shared.px = (shared.px + width) % width;
-        }
-    }
-
-    // if we are moving right && we aren't against right wall
-    if (shared.vx > 0 && shared.px < 1035) {
-        shared.px += shared.vx;
-    }
-
-    //top wall
-    if(shared.vy < 0 && shared.py > 50){
-        shared.py += shared.vy;
-    }
-
-    //bottom wall
-    if(shared.vy > 0 && shared.py < 850){
-        shared.py += shared.vy;
-    }
-    // shared.px += shared.vx;
-
-    shared.vx = 0;
-    shared.vy = 0;
-
-    //collision detection with in game walls
-    for(let i = 0; i < createWalls.length; i++){
-        //top wall
-        if(shared.py < createWalls[i][0] || shared.py > height - createWalls[i][3]){
-            if(shared.px > createWalls[i][0] && shared.px < createWalls[i][3] + width){
-                shared.px -= shared.vx;
-                shared.py -= shared.vy;
-                // hightlight = true;
-                // return true;
-            }
-        }
-        // hightlight = false;
-        // return false;
-    }
-
-    if(my.selectedTeam == "Pac-man"){
-        //have to speed instead of speedX & speedY
+    for(const p of participants){
+        p.px += p.vx;
+        p.py += p.vy;
+                //have to speed instead of speedX & speedY
         //Up arrow or W
         //vertical collision - make velocity 0
         if(keyIsDown(UP_ARROW) || keyIsDown(87)){
-            shared.vx = 0;
-            shared.vy = -shared.vel * shared.speed;
-            shared.dir = 1;
+          if(my.selectedTeam == "Pac-man"){
+            p.vx = 0;
+            p.vy = -p.vel * p.speed;
+            p.dir = 1;
+          }
         }
         //down arrow or S
         if(keyIsDown(DOWN_ARROW) || keyIsDown(83)){
-            shared.vx = 0;
-            shared.vy = shared.vel * shared.speed;
-            shared.dir = 2;
+          
         }
         //left arrow & A
         if(keyIsDown(LEFT_ARROW) || keyIsDown(65)){
-            shared.vx = -shared.vel * shared.speed;
-            shared.vy = 0;
-            shared.dir = 3;
+            
         }
         //right arrow or D
         if(keyIsDown(RIGHT_ARROW) || keyIsDown(68)){
-            shared.vx = shared.vel * shared.speed;
-            shared.vy = 0;
-            shared.dir = 4;
+           
         }
     }
-
-    //red ghost
-        // if we are moving left && we aren't against left wall
-        if (shared.red_vx < 0 && shared.red_px > 30) {
-            shared.red_px += shared.red_vx;
-            if(width < 50){
-                shared.red_px = (shared.red_px + width) % width;
-            }
-        }
-    
-        // if we are moving right && we aren't against right wall
-        if (shared.red_vx > 0 && shared.red_px < 1035) {
-            shared.red_px += shared.red_vx;
-        }
-    
-        //top wall
-        if(shared.red_vy < 0 && shared.red_py > 30){
-            shared.red_py += shared.red_vy;
-        }
-    
-        //bottom wall
-        if(shared.red_vy > 0 && shared.red_py < 830){
-            shared.red_py += shared.red_vy;
-        }
-        // shared.px += shared.vx;
-    
-        shared.red_vx = 0;
-        shared.red_vy = 0;
-
-    if(my.selectedTeam == "Red Ghost"){
-        //w - up
-        if(keyIsDown(UP_ARROW) || keyIsDown(87)){
-            shared.red_vx = 0;
-            shared.red_vy = -shared.red_vel * shared.red_speed;
-            shared.red_dir = 1;
-        }
-        //s - down
-        else if(keyIsDown(DOWN_ARROW) || keyIsDown(83)){
-            shared.red_vx = 0;
-            shared.red_vy = shared.red_vel * shared.red_speed;
-            shared.red_dir = 2;
-        }
-        //a - left
-        else if(keyIsDown(LEFT_ARROW) || keyIsDown(65)){
-            shared.red_vx = -shared.red_vel * shared.red_speed;
-            shared.red_vy = 0;
-            shared.red_dir = 3;
-        }
-        //d - right
-        else if(keyIsDown(RIGHT_ARROW) || keyIsDown(68)){
-            shared.red_vx = shared.red_vel * shared.red_speed;
-            shared.red_vy = 0;
-            shared.red_dir = 4;
-        }
-        //set ghost back to static if the player isn't moving
-        else{
-            shared.red_vx = 0;
-            shared.red_vy = 0;
-            shared.red_dir = 0;
-        }
-    }
-
-    //blue ghost
-        // if we are moving left && we aren't against left wall
-        if (shared.blue_vx < 0 && shared.blue_px > 30) {
-            shared.blue_px += shared.blue_vx;
-    
-            if(width < 50){
-                shared.blue_px = (shared.blue_px + width) % width;
-            }
-        }
-    
-        // if we are moving right && we aren't against right wall
-        if (shared.blue_vx > 0 && shared.blue_px < 1035) {
-            shared.blue_px += shared.blue_vx;
-        }
-    
-        //top wall
-        if(shared.blue_vy < 0 && shared.blue_py > 30){
-            shared.blue_py += shared.blue_vy;
-        }
-    
-        //bottom wall
-        if(shared.blue_vy > 0 && shared.blue_py < 830){
-            shared.blue_py += shared.blue_vy;
-        }
-        // shared.px += shared.vx;
-    
-        shared.blue_vx = 0;
-        shared.blue_vy = 0;
-    
-        if(my.selectedTeam == "Blue Ghost"){
-            //w
-            if(keyIsDown(UP_ARROW) || keyIsDown(87)){
-                shared.blue_vx = 0;
-                shared.blue_vy = -shared.blue_vel * shared.blue_speed;
-                shared.blue_dir = 1;
-            }
-            //s
-            else if(keyIsDown(DOWN_ARROW) || keyIsDown(83)){
-                shared.blue_vx = 0;
-                shared.blue_vy = shared.blue_vel * shared.blue_speed;
-                shared.blue_dir = 2;
-            }
-            //a
-            else if(keyIsDown(LEFT_ARROW) || keyIsDown(65)){
-                shared.blue_vx = -shared.blue_vel * shared.blue_speed;
-                shared.blue_vy = 0;
-                shared.blue_dir = 3;
-            }
-            //d
-            else if(keyIsDown(RIGHT_ARROW) || keyIsDown(68)){
-                shared.blue_vx = shared.blue_vel * shared.blue_speed;
-                shared.blue_vy = 0;
-                shared.blue_dir = 4;
-            }
-    
-              //set ghost back to static if the player isn't moving
-              else{
-                shared.blue_vx = 0;
-                shared.blue_vy = 0;
-                shared.blue_dir = 0;
-            }
-        }
-
-           // if we are moving left && we aren't against left wall
-           if (shared.green_vx < 0 && shared.green_px > 30) {
-            shared.green_px += shared.green_vx;
-    
-            if(width < 50){
-                shared.green_px = (shared.green_px + width) % width;
-            }
-        }
-    
-        //green ghost
-        // if we are moving right && we aren't against right wall
-        if (shared.green_vx > 0 && shared.green_px < 1035) {
-            shared.green_px += shared.green_vx;
-        }
-    
-        //top wall
-        if(shared.green_vy < 0 && shared.green_py > 30){
-            shared.green_py += shared.green_vy;
-        }
-    
-        //bottom wall
-        if(shared.green_vy > 0 && shared.green_py < 830){
-            shared.green_py += shared.green_vy;
-        }
-    
-        shared.green_vx = 0;
-        shared.green_vy = 0;
-        //have to speed instead of speedX & speedY
-    
-        if(my.selectedTeam == "Green Ghost"){
-            //w
-            if(keyIsDown(UP_ARROW) || keyIsDown(87)){
-                shared.green_vx = 0;
-                shared.green_vy = -shared.green_vel * shared.green_speed;
-                shared.green_dir = 1;
-            }
-            //s
-            else if(keyIsDown(DOWN_ARROW) || keyIsDown(83)){
-                shared.green_vx = 0;
-                shared.green_vy = shared.green_vel * shared.green_speed;
-                shared.green_dir = 2;
-            }
-            //a
-            else if(keyIsDown(LEFT_ARROW) || keyIsDown(65)){
-                shared.green_vx = -shared.green_vel * shared.green_speed;
-                shared.green_vy = 0;
-                shared.green_dir = 3;
-            }
-            //d
-            else if(keyIsDown(RIGHT_ARROW) || keyIsDown(68)){
-                shared.green_vx = shared.green_vel * shared.green_speed;
-                shared.green_vy = 0;
-                shared.green_dir = 4;
-            }
-    
-              //set ghost back to static if the player isn't moving
-            else{
-                shared.green_vx = 0;
-                shared.green_vy = 0;
-                shared.green_dir = 0;
-            }
-    }
-    //purple ghost
-
-        // if we are moving left && we aren't against left wall
-        if (shared.purple_vx < 0 && shared.purple_px > 30) {
-            shared.purple_px += shared.purple_vx;
-    
-            if(width < 50){
-                shared.purple_px = (shared.purple_px + width) % width;
-            }
-        }
-    
-        // if we are moving right && we aren't against right wall
-        if (shared.purple_vx > 0 && shared.purple_px < 1035) {
-            shared.purple_px += shared.purple_vx;
-        }
-    
-        //top wall
-        if(shared.purple_vy < 0 && shared.purple_py > 30){
-            shared.purple_py += shared.purple_vy;
-        }
-    
-        //bottom wall
-        if(shared.purple_vy > 0 && shared.purple_py < 830){
-            shared.purple_py += shared.purple_vy;
-        }
-        shared.purple_vx = 0;
-        shared.purple_vy = 0;
-        //have to speed instead of speedX & speedY
-    
-        if(my.selectedTeam == "Purple Ghost"){
-            //w
-            if(keyIsDown(UP_ARROW) || keyIsDown(87)){
-                shared.purple_vx = 0;
-                shared.purple_vy = -shared.purple_vel * shared.purple_speed;
-                shared.purple_dir = 1;
-            }
-            //s
-            else if(keyIsDown(DOWN_ARROW) || keyIsDown(83)){
-                shared.purple_vx = 0;
-                shared.purple_vy = shared.purple_vel * shared.purple_speed;
-                shared.purple_dir = 2;
-            }
-            //a
-            else if(keyIsDown(LEFT_ARROW) || keyIsDown(65)){
-                shared.purple_vx = -shared.purple_vel * shared.purple_speed;
-                shared.purple_vy = 0;
-                shared.purple_dir = 3;
-            }
-            //d
-            else if(keyIsDown(RIGHT_ARROW) || keyIsDown(68)){
-                shared.purple_vx = shared.purple_vel * shared.purple_speed;
-                shared.purple_vy = 0;
-                shared.purple_dir = 4;
-            }
-    
-            //set ghost back to static if the player isn't moving
-            else{
-                shared.purple_vx = 0;
-                shared.purple_vy = 0;
-                shared.purple_dir = 0;
-            }
-        }
 }
 
 function chaosMode(){
