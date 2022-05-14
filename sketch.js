@@ -1,19 +1,29 @@
 let my,shared,pacmanFont;
 let marginVert,marginHori,col,row;
 let obstacles, borders, ballCol,pacmanCol,redCol,blueCol,greenCol,purpleCol;
+
+let pacScore = 0;
+let blinkyScore = 0;
+let inkyScore = 0;
+let clydeScore = 0;
+let winkyScore = 0;
+
 let path = [];
 let wasHere = [];
 let createWalls = [];
 let eggs = [];
+
 let scene = 0;
 let size = 90;
 let pacSize = 55;
 let ghostSize = 50;
 let spacing = 2;
+
 let isPaused = false;
 let hightlight = false;
 let pacman,instructions,link;
 let titleBackground,paused;
+
 let x = 10;
 let y = 300;
 
@@ -25,11 +35,11 @@ let purpleGhostArray = [];
 function preload(){
     partyConnect(
         "wss://deepstream-server-1.herokuapp.com",
-        "Pacman_Chaos_basic",
+        "Pacman_Chaos_test",
         "main1"
       );
     shared = partyLoadShared("globals");
-    my = partyLoadMyShared();
+    my = partyLoadMyShared();//object in participants array
     participants = partyLoadParticipantShareds();
     //sounds
 
@@ -104,8 +114,7 @@ function setup(){
     if(partyIsHost()){
         partySetShared(shared,{
             player: 0,
-            
-
+            gameState: "PLAYING",
             hostStart: false,
             hostRestart: false,
             role: "Observer"
@@ -113,36 +122,26 @@ function setup(){
     }
 
     // Make a select menu
-    teamDropDownMenu = createSelect();
-    teamDropDownMenu.option("Choose a Team");
-    teamDropDownMenu.disable("Choose a Team");
-    teamDropDownMenu.option("Pac-man");
-    teamDropDownMenu.option("Red Ghost");
-    teamDropDownMenu.option("Blue Ghost");
-    teamDropDownMenu.option("Green Ghost");
-    teamDropDownMenu.option("Purple Ghost");
-    teamDropDownMenu.position(1470,600);
-    teamDropDownMenu.id("menu");
+    // teamDropDownMenu = createSelect();
+    // teamDropDownMenu.option("Choose a Team");
+    // teamDropDownMenu.disable("Choose a Team");
+    // teamDropDownMenu.option("Pac-man");
+    // teamDropDownMenu.option("Red Ghost");
+    // teamDropDownMenu.option("Blue Ghost");
+    // teamDropDownMenu.option("Green Ghost");
+    // teamDropDownMenu.option("Purple Ghost");
+    // teamDropDownMenu.position(1470,600);
+    // teamDropDownMenu.id("menu");
     
-    // When an option is chosen, assign it to my.selectedTeam
-    teamDropDownMenu.changed(() =>{
-        my.selectedTeam = teamDropDownMenu.value();
-    });
+    // // When an option is chosen, assign it to my.selectedTeam
+    // teamDropDownMenu.changed(() =>{
+    //     my.selectedTeam = teamDropDownMenu.value();
+    // });
 
     /*using participants solves issues with players being able 
     to control the same player at once*/
-    // for(let i = 0; i < participants.length; i++){
-
-    my.xchange = 0;
-    my.ychange = 0;
-    //pacman
-       // my.pCol = color(pacmanCol);
-    // my.x = 400;
-    // my.y = height - 320;
     my.w = 60;
     my.h = 60;
-    my.px = centerX(6);
-    my.py =  centerY(7);
     my.vx = 0;
     my.vy =  0;
     my.speed = 3;
@@ -153,46 +152,52 @@ function setup(){
     my.thetaOff = 0;
     my.theta = 0;
 
-    //red ghost
-    my.rx = ghostCenterX(5);
-    my.ry = ghostCenterY(4);
-
-    //blue ghost
-    my.bx = ghostCenterX(6);
-    my.by = ghostCenterY(4);
-
-    //green ghost
-    my.gx = ghostCenterX(5);
-    my.gy = ghostCenterY(5);
-
-    //purple ghost
-    my.purpX = ghostCenterX(6);
-    my.purpY = ghostCenterY(5);
-
-     if(participants.length == 1){
-        my.selectedTeam = "Pac-man";
-     }
-     else if(participants.length == 2){
-        my.selectedTeam = "Red Ghost";
-     }
-     else if(participants.length == 3){
-        my.selectedTeam = "Blue Ghost";
-     }
-     else if(participants.length == 4){
-        my.selectedTeam = "Green Ghost";
-     }
-     else if(participants.length == 5){
-        my.selectedTeam = "Purple Ghost";
-     }
-     else{
-        my.selectedTeam = "Observer";
-     }
+    if(participants.length == 1){
+    //   my.selectedTeam = "Pac-man";
+      my.color = "yellow";
+      my.px = centerX(6);
+      my.py = centerX(7);
+      my.pacPoints = 0;
     }
-// }
+    if(participants.length == 2){
+    //  my.selectedTeam = "Red Ghost";
+      my.color = "red";
+     // my.sprite = "assets/RedGhostStatic.png";
+    //   console.log(my.px);
+      my.px = ghostCenterX(5);
+      my.py = ghostCenterY(4);
+      my.ghostPoints = 0;
+    }
+    if(participants.length == 3){
+        my.color = "blue";
+        my.px = ghostCenterX(6);
+        my.py = ghostCenterY(4);
+        my.ghostPoints = 0;
+    // my.selectedTeam = "Blue Ghost";
+    }
+    if(participants.length == 4){
+        my.color = "green";
+        my.px = ghostCenterX(5);
+        my.py = ghostCenterY(5);
+        my.ghostPoints = 0;
+    // my.selectedTeam = "Green Ghost";
+    }
+    if(participants.length == 5){
+        my.color = "purple";
+        my.px = ghostCenterX(6);
+        my.py = ghostCenterY(5);
+        my.ghostPoints = 0;
+    // my.selectedTeam = "Purple Ghost";
+    }
+    else{
+      shared.role = "observer";
+    }
+}
 
 function draw(){
     background(1);
     instructions.hide();
+    scoreBoard();
     switch(scene){
     case 1:
       waitForHost();
@@ -200,6 +205,9 @@ function draw(){
     case 2:
       game();
       break;
+    case 3:
+        gameOver();
+        break;
     default:
       startScreen();
       instructions.show();
@@ -252,16 +260,74 @@ function buttonHighlight(){
 
 }
 
+function scoreBoard(){
+    let scoreBoard = createDiv("Score Board");
+    scoreBoard.id("scoreBoard");
+    scoreBoard.position(1475,430);
+
+    //pac-man
+    let pacScoreText = createElement("h3", "Pac-man: " + pacScore);
+    pacScoreText.parent(scoreBoard);
+
+    //red ghost
+    let blinkyScoreText = createElement("h3","Blinky: " + blinkyScore);
+    blinkyScoreText.parent(scoreBoard);
+
+    //blue ghost
+    let inkyScoreText = createElement("h3", "Inky: " + inkyScore);
+    inkyScoreText.parent(scoreBoard);
+
+    //green ghost
+    let clydeScoreText = createElement("h3","Clyde: " + clydeScore);
+    clydeScoreText.parent(scoreBoard);
+
+    //purple ghost
+    let winkyScoreText = createElement("h3","Winky: " + winkyScore);
+    winkyScoreText.parent(scoreBoard);
+}
+
 function game(){
     background(0);
     maze();
     // tokens();
     drawPlayers();
     controls();
+    // if(shared.gameState === "PLAYING"){
+    //     game();
+    // }
+    // else{
+    //     gameOver();
+    // }
 
+    if(partyIsHost()){
+        collisionDetection();
+        detectWalls();
+    }
 }
 
 function gameOver(){
+    background(220);
+    fill(255,0,0);
+    textSize(40);
+    textAlign(CENTER);
+    text("Game Over!", width/2,300);
+
+    if(partyIsHost()){
+        text("Press R to restart",width/2,500);
+        shared.hostRestart = false;
+
+        if(keyCode == 82){
+            shared.hostRestart = true;
+            shared.hostStart = false;
+            scene = 1;
+        }
+    }
+    else if(!partyIsHost()){
+        text("Wait for the host to restart", width/2, 500);
+        if(shared.hostRestart == true){
+            scene = 1;
+        }
+    }
 
 }
 
@@ -277,6 +343,36 @@ function death(){
 
 function victory(){
 
+}
+
+function collisionDetection(){
+  //players
+  for (const p1 of participants) {
+    for (const p2 of participants) {
+      if (p1 === p2) continue;
+        if (dist(p1.px, p1.py, p2.px, p2.py) < 20) {
+        //console.log("collision!");
+            // gameOver();
+            // shared.gameState = "GAME_OVER";
+        }
+    //    for(let i = 0; i < createWalls.length; i++){
+    //        if(dist(p1.px,p1.py,createWalls[i][0] < 20)){
+    //           console.log("P1 has hit the wall");
+    //        }
+    //    }
+    }
+  }
+}
+
+function detectWalls(){
+    for(let i = 0; i < createWalls.length; i++){
+       for(const p of participants){
+           //top wall get coordinates of individual walls
+           if(dist(p.px,p.py,createWalls[i][0],createWalls[i][3]) < 20){
+               console.log("Hit wall");
+           }
+       }
+    }
 }
 
 function maze(){
@@ -393,62 +489,70 @@ function ghostCenterY(row){
     return marginVert + (row - 0.75) * size;
 }
 
-function moveX(steps){
-    my.xchange = steps;
-}
-
-function moveY(steps){
-    my.ychange = steps;
-}
-
-//pacman
-//find dist then check if it's less than something
 function drawPlayers(){
-   for(const p of participants){
-    //pac-man
-        fill(pacmanCol);
+    for(const p of participants){
+        fill(p.color);
         ellipse(p.px,p.py,p.w,p.h);
-
-        fill(redCol);
-        ellipse(p.rx,p.ry,p.w,p.h);
-
-        fill(blueCol);
-        ellipse(p.bx,p.by,p.w,p.h);
-
-        fill(greenCol);
-        ellipse(p.gx,p.gy,p.w,p.h);
-
-        fill(purpleCol);
-        ellipse(p.purpX,p.purpY,p.w,p.h);
-   }
+        // image(p.sprite,p.px,p.py,50,50);
+        // console.log(p.sprite);
+    }
 }
 
 function controls(){
-    for(const p of participants){
-        p.px += p.vx;
-        p.py += p.vy;
-                //have to speed instead of speedX & speedY
-        //Up arrow or W
-        //vertical collision - make velocity 0
-        if(keyIsDown(UP_ARROW) || keyIsDown(87)){
-          if(my.selectedTeam == "Pac-man"){
-            p.vx = 0;
-            p.vy = -p.vel * p.speed;
-            p.dir = 1;
-          }
-        }
-        //down arrow or S
-        if(keyIsDown(DOWN_ARROW) || keyIsDown(83)){
-          
-        }
-        //left arrow & A
-        if(keyIsDown(LEFT_ARROW) || keyIsDown(65)){
-            
-        }
-        //right arrow or D
-        if(keyIsDown(RIGHT_ARROW) || keyIsDown(68)){
-           
-        }
+    //left wall
+    if(my.vx < 0 && my.px > 50){
+        my.px += my.vx;
+    }
+    
+    //right wall
+    if(my.vx > 0 && my.px < 1035){
+        my.px += my.vx;
+    }
+
+    //top wall
+    if(my.vy < 0 && my.py > 50){
+        my.py += my.vy;
+    }
+
+    //bottom wall
+    if(my.vy > 0 && my.py < 850){
+        my.py += my.vy;
+    }
+
+    my.vx = 0;
+    my.vy = 0;
+    //Up arrow or W
+    //vertical collision - make velocity 0
+    if(keyIsDown(UP_ARROW) || keyIsDown(87)){
+        // if(my.selectedTeam == "Pac-man"){
+            my.vx = 0;
+            my.vy = -my.vel * my.speed;
+            my.dir = 1;
+        // }
+    }
+    //down arrow or S
+    if(keyIsDown(DOWN_ARROW) || keyIsDown(83)){
+        // if(my.selectedTeam == "Pac-man"){
+            my.vx = 0;
+            my.vy = my.vel * my.speed;
+            my.dir = 2;
+        // }
+    }
+    //left arrow & A
+    if(keyIsDown(LEFT_ARROW) || keyIsDown(65)){
+        // if(my.selectedTeam == "Pac-man"){
+            my.vx = -my.vel * my.speed;
+            my.vy = 0;
+            my.dir = 3;
+        // }
+    }
+    //right arrow or D
+    if(keyIsDown(RIGHT_ARROW) || keyIsDown(68)){
+        // if(my.selectedTeam == "Pac-man"){
+            my.vx = my.vel * my.speed;
+            my.vy = 0;
+            my.dir = 4;
+        // }
     }
 }
 

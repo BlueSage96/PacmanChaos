@@ -56,6 +56,24 @@ html, body {
       left: 19.5vw;
   }
 
+  div#scoreBoard{
+      border: 2px solid white;
+      background-color: black;
+      padding: 10px 10px;
+      margin-bottom: 10px;
+      line-height: 60px;
+      color: white;
+      font-size: 30px;
+  }
+
+  /* h3#pacmanScore, h3#blinkyScore, h3#inkyScore, h3#clydeScore, h3#winkyScore{
+      background-color: black;
+      color: white;
+      font-size: 30px;
+      width: 120%;
+      padding: 10px 10px;
+  } */
+
   button{
       font-family: pacmanFont;
       font-size: 40px;
@@ -67,14 +85,14 @@ html, body {
   #toggle{
       font-size: 35px;
       position: absolute;
-      top: 35vh;
+      top: 33vh;
       left: 2vw;
       padding: 10px;
   }
 
   #kit{
     position: absolute;
-    top: 60vh;
+    top: 45vh;
     left: 3vw;
     padding: 5px 0;
 }
@@ -98,9 +116,9 @@ html, body {
   } 
 
   #original{
-    font-size: 45px;
+    font-size: 40px;
     position: absolute;
-    top: 35vh;
+    top: 33vh;
     left: 82vw;
     padding: 5px 0;
 } 
