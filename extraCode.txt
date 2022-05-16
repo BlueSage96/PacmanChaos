@@ -1,3 +1,31 @@
+        // Make a select menu
+    // teamDropDownMenu = createSelect();
+    // teamDropDownMenu.option("Choose a Team");
+    // teamDropDownMenu.disable("Choose a Team");
+    // teamDropDownMenu.option("Pac-man");
+    // teamDropDownMenu.option("Red Ghost");
+    // teamDropDownMenu.option("Blue Ghost");
+    // teamDropDownMenu.option("Green Ghost");
+    // teamDropDownMenu.option("Purple Ghost");
+    // teamDropDownMenu.position(1470,600);
+    // teamDropDownMenu.id("menu");
+    
+    // // When an option is chosen, assign it to my.selectedTeam
+    // teamDropDownMenu.changed(() =>{
+    //     my.selectedTeam = teamDropDownMenu.value();
+    // });
+
+    
+        //    for(let i = 0; i < createWalls.length; i++){
+    //        if(dist(p1.px,p1.py,createWalls[i][0] < 20)){
+    //           console.log("P1 has hit the wall");
+    //        }
+    //    }
+
+            //console.log("collision!");
+            // gameOver();
+            // shared.gameState = "GAME_OVER";
+            
     // definePath();
 
     //detectWall();

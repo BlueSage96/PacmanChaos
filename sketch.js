@@ -1,13 +1,7 @@
 let my,shared,pacmanFont;
 let marginVert,marginHori,col,row;
 let obstacles, borders, ballCol,pacmanCol,redCol,blueCol,greenCol,purpleCol;
-
-let pacScore = 0;
-let blinkyScore = 0;
-let inkyScore = 0;
-let clydeScore = 0;
-let winkyScore = 0;
-
+let chomping;
 let path = [];
 let wasHere = [];
 let createWalls = [];
@@ -35,14 +29,14 @@ let purpleGhostArray = [];
 function preload(){
     partyConnect(
         "wss://deepstream-server-1.herokuapp.com",
-        "Pacman_Chaos_test",
+        "Pacman_Chaos",
         "main1"
       );
     shared = partyLoadShared("globals");
     my = partyLoadMyShared();//object in participants array
     participants = partyLoadParticipantShareds();
     //sounds
-
+    chomping = loadSound("assets/WakaWaka.wav");
     //images
     titleBackground = loadImage("assets/titleScreen.png");
     paused = loadImage("assets/PausedScreen.png");
@@ -102,6 +96,7 @@ function setup(){
     greenCol = color(0,255,0);
     purpleCol = color(255,0,255);
 
+    chomping.setVolume(0.015);
     link = createA("instructions.html","");
 
     instructions = createImg("assets/icon.png","instructions.html").parent(link);
@@ -120,74 +115,51 @@ function setup(){
             role: "Observer"
         });
     }
-
-    // Make a select menu
-    // teamDropDownMenu = createSelect();
-    // teamDropDownMenu.option("Choose a Team");
-    // teamDropDownMenu.disable("Choose a Team");
-    // teamDropDownMenu.option("Pac-man");
-    // teamDropDownMenu.option("Red Ghost");
-    // teamDropDownMenu.option("Blue Ghost");
-    // teamDropDownMenu.option("Green Ghost");
-    // teamDropDownMenu.option("Purple Ghost");
-    // teamDropDownMenu.position(1470,600);
-    // teamDropDownMenu.id("menu");
-    
-    // // When an option is chosen, assign it to my.selectedTeam
-    // teamDropDownMenu.changed(() =>{
-    //     my.selectedTeam = teamDropDownMenu.value();
-    // });
-
     /*using participants solves issues with players being able 
     to control the same player at once*/
     my.w = 60;
     my.h = 60;
     my.vx = 0;
     my.vy =  0;
-    my.speed = 3;
+    my.speed = 5;
     my.speedX = 0;
     my.speedY = 0;
     my.dir = 0;
     my.vel = 1;
     my.thetaOff = 0;
     my.theta = 0;
+    my.playerMoving = false;
+
+    my.pacScore = 0;
+    my.blinkyScore  = 0;
+    my.inkyScore = 0;
+    my.clydeScore = 0;
+    my.winkyScore = 0;
 
     if(participants.length == 1){
-    //   my.selectedTeam = "Pac-man";
       my.color = "yellow";
       my.px = centerX(6);
       my.py = centerX(7);
-      my.pacPoints = 0;
     }
     if(participants.length == 2){
-    //  my.selectedTeam = "Red Ghost";
       my.color = "red";
-     // my.sprite = "assets/RedGhostStatic.png";
-    //   console.log(my.px);
       my.px = ghostCenterX(5);
       my.py = ghostCenterY(4);
-      my.ghostPoints = 0;
     }
     if(participants.length == 3){
         my.color = "blue";
         my.px = ghostCenterX(6);
         my.py = ghostCenterY(4);
-        my.ghostPoints = 0;
-    // my.selectedTeam = "Blue Ghost";
     }
     if(participants.length == 4){
         my.color = "green";
         my.px = ghostCenterX(5);
         my.py = ghostCenterY(5);
-        my.ghostPoints = 0;
-    // my.selectedTeam = "Green Ghost";
     }
     if(participants.length == 5){
         my.color = "purple";
         my.px = ghostCenterX(6);
         my.py = ghostCenterY(5);
-        my.ghostPoints = 0;
-    // my.selectedTeam = "Purple Ghost";
     }
     else{
       shared.role = "observer";
@@ -266,23 +238,23 @@ function scoreBoard(){
     scoreBoard.position(1475,430);
 
     //pac-man
-    let pacScoreText = createElement("h3", "Pac-man: " + pacScore);
+    let pacScoreText = createElement("h3", "Pac-man: " + my.pacScore);
     pacScoreText.parent(scoreBoard);
 
     //red ghost
-    let blinkyScoreText = createElement("h3","Blinky: " + blinkyScore);
+    let blinkyScoreText = createElement("h3","Blinky: " + my.blinkyScore);
     blinkyScoreText.parent(scoreBoard);
 
     //blue ghost
-    let inkyScoreText = createElement("h3", "Inky: " + inkyScore);
+    let inkyScoreText = createElement("h3", "Inky: " + my.inkyScore);
     inkyScoreText.parent(scoreBoard);
 
     //green ghost
-    let clydeScoreText = createElement("h3","Clyde: " + clydeScore);
+    let clydeScoreText = createElement("h3","Clyde: " + my.clydeScore);
     clydeScoreText.parent(scoreBoard);
 
     //purple ghost
-    let winkyScoreText = createElement("h3","Winky: " + winkyScore);
+    let winkyScoreText = createElement("h3","Winky: " + my.winkyScore);
     winkyScoreText.parent(scoreBoard);
 }
 
@@ -299,10 +271,10 @@ function game(){
     //     gameOver();
     // }
 
-    if(partyIsHost()){
+    // if(partyIsHost()){
         collisionDetection();
-        detectWalls();
-    }
+        // detectWalls();
+    // }
 }
 
 function gameOver(){
@@ -351,28 +323,36 @@ function collisionDetection(){
     for (const p2 of participants) {
       if (p1 === p2) continue;
         if (dist(p1.px, p1.py, p2.px, p2.py) < 20) {
-        //console.log("collision!");
-            // gameOver();
-            // shared.gameState = "GAME_OVER";
+            if(p1.color == "yellow" && my.playerMoving == true){
+                my.pacScore++;
+            }
+            if(p2.color == "red" && my.playerMoving == true){
+                my.blinkyScore++;
+            }
+
+            if(p2.color == "blue" && my.playerMoving == true){
+               my.inkyScore++; 
+            }
+
+            if( p2.color == "green" && my.playerMoving == true){
+                my.clydeScore++;
+            }
+
+            if(p2.color == "purple" && my.playerMoving == true){
+                my.winkyScore++;
+            }
+
+            else if(playerMoving == false){
+                my.pacScore = 0;
+                my.blinkyScore = 0;
+                my.inkyScore = 0;
+                my.clydeScore = 0;
+                my.winkyScore = 0;
+            }
         }
-    //    for(let i = 0; i < createWalls.length; i++){
-    //        if(dist(p1.px,p1.py,createWalls[i][0] < 20)){
-    //           console.log("P1 has hit the wall");
-    //        }
-    //    }
+
     }
   }
-}
-
-function detectWalls(){
-    for(let i = 0; i < createWalls.length; i++){
-       for(const p of participants){
-           //top wall get coordinates of individual walls
-           if(dist(p.px,p.py,createWalls[i][0],createWalls[i][3]) < 20){
-               console.log("Hit wall");
-           }
-       }
-    }
 }
 
 function maze(){
@@ -462,16 +442,43 @@ function tokens(){
             //see if walls x & y is the same as the create walls
            //loop through walls and see if
            //only create eggs if there is not a wall in location - centerX, centerY
-            if(cx <= createWalls[i][0] || cy >= createWalls[i][1]){
-                fill(ballCol);
-                ellipse(cx,cy,25,25);
-            }
-            //eggs.push([cx,cy]);
+            // if(dist(cx,cy,createWalls[i][0],createWalls[i][1]) > 10){
+            // if(cx >= createWalls[i][0]){
+            //     fill(ballCol);
+            //     ellipse(cx,cy,25,25);
+            // }
+            // eggs.push([cx,cy]);
           }
        }
     }
-  //console.log(eggs);
+//   console.log(eggs);
 }
+
+function detectWalls(){
+    for(let i = 0; i < createWalls.length; i++){
+       // console.log(createWalls[2][2]);//90
+       for(const p of participants){
+           //top right wall get coordinates of individual walls
+           if(dist(p.px,p.py,createWalls[i][0],createWalls[i][2]) < 25){
+             if(p.px > 635 && p.px < 810 && p.py > 60 && p.py < 200){
+               console.log("X: " + p.px, "Y: " + p.py);
+               p.vx = -1;
+               p.vy = -1;
+             }
+           }
+        // if(p.py < createWalls[i][0] || p.py > height - createWalls[i][3]){
+        //     if(p.px > createWalls[i][0] && p.px < createWalls[i][3] + width){
+        //         p.vx = -1;
+        //         p.vy = -1;
+        //         console.log("X: " + p.px, "Y: " + p.py);
+        //         // hightlight = true;
+        //         // return true;
+        //     }
+        // }
+       }
+    }
+}
+
 
 function centerX(col){
     return marginHori + (col - 0.5) * size;
@@ -492,7 +499,151 @@ function ghostCenterY(row){
 function drawPlayers(){
     for(const p of participants){
         fill(p.color);
-        ellipse(p.px,p.py,p.w,p.h);
+        if(p.color == "yellow"){
+            p.theta = PI / 3 * sq(sin(p.thetaOff));//chomping
+            p.thetaOff += 0.1;
+            // chomping.play();
+            //stationary
+            if(p.dir == 0){
+                arc(p.px,p.py,p.w,p.h,p.theta,-p.theta);
+                //eyes
+                fill(0);
+                ellipse(p.px,p.py-12,10,10);
+                // chomping.stop();
+            }
+
+            //up
+            if(p.dir == 1){
+                arc(p.px,p.py,p.w,p.h,-p.theta - PI / 6, p.theta + 7 * PI / 6);
+                fill(0);
+                ellipse(p.px - 12, p.py,10,10);
+                // chomping.play();
+            }
+
+            //down
+            if(p.dir == 2){
+                arc(p.px,p.py,pacSize,pacSize,-7 * PI / 6 - p.theta, p.theta + PI / 6);
+                //eyes
+                fill(0);
+                ellipse(p.px+12,p.py,10,10); 
+                // chomping.play();
+            }
+
+            //left
+            if(p.dir == 3){
+                arc(p.px,p.py,pacSize,pacSize,p.theta + PI, -p.theta + PI);
+                //eyes
+                fill(0);
+                ellipse(p.px,p.py-12, 10,10);
+                // chomping.play();
+            }
+
+            //right
+            if(p.dir == 4){
+                arc(p.px,p.py,pacSize,pacSize,p.theta,-p.theta);
+                //eyes
+                fill(0);
+                ellipse(p.px,p.py-12,10,10);  
+                // chomping.play();
+            }
+       }
+
+       else{
+           if(p.dir == 0){
+                ellipse(p.px,p.py,p.w,p.h);
+                //eyeball
+                fill(255);
+                ellipse(p.px - 8, p.py - 2, 10, 10);
+                ellipse(p.px + 8, p.py - 2, 10, 10);
+
+                //iris
+                fill(p.color);
+                ellipse(p.px - 8, p.py - 2, 6, 6);
+                ellipse(p.px + 8, p.py - 2, 6, 6);
+
+                //pupil
+                fill(0);
+                ellipse(p.px - 8, p.py - 2, 4, 4);
+                ellipse(p.px + 8, p.py - 2, 4, 4);
+           }
+    //        //up
+           if(p.dir == 1){
+                ellipse(p.px,p.py,p.w,p.h);
+                //eyeball
+                fill(255);
+                ellipse(p.px - 8, p.py - 2, 10, 10);
+                ellipse(p.px + 8, p.py - 2, 10, 10);
+
+                //iris
+                fill(p.color);
+                ellipse(p.px - 8, p.py - 6, 6, 6);
+                ellipse(p.px + 8, p.py - 6, 6, 6);
+
+                //pupil
+                fill(0);
+                ellipse(p.px - 8, p.py - 6, 4, 4);
+                ellipse(p.px + 8, p.py - 6, 4, 4);
+            }
+    //        //down
+           if(p.dir == 2){
+                ellipse(p.px,p.py,p.w,p.h);
+                //eyeball
+                fill(255);
+                ellipse(p.px - 8, p.py - 2, 10, 10);
+                ellipse(p.px + 8, p.py - 2, 10, 10);
+
+                //iris
+                fill(p.color);
+                ellipse(p.px - 8, p.py + 2, 6, 6);
+                ellipse(p.px + 8, p.py + 2, 6, 6);
+
+                //pupil
+                fill(0);
+                ellipse(p.px - 8, p.py + 2, 4, 4);
+                ellipse(p.px + 8, p.py + 2, 4, 4);
+            }
+    //         //left
+            if(p.dir == 3){
+                ellipse(p.px,p.py,p.w,p.h);
+                //eyeball
+                fill(255);
+                ellipse(p.px - 8, p.py - 2, 10, 10);
+                ellipse(p.px + 8, p.py - 2, 10, 10);
+
+                //iris
+                fill(p.color);
+                ellipse(p.px - 10, p.py - 2, 6, 6);
+                ellipse(p.px + 6, p.py - 2, 6, 6);
+
+                //pupil
+                fill(0);
+                ellipse(p.px - 10, p.py - 2, 4, 4);
+                ellipse(p.px + 6, p.py - 2, 4, 4);
+           }
+
+    //        //right
+           if(p.dir == 4){
+                ellipse(p.px,p.py,p.w,p.h);
+                //eyeball
+                fill(255);
+                ellipse(p.px - 8, p.py - 2, 10, 10);
+                ellipse(p.px + 8, p.py - 2, 10, 10);
+
+                //iris
+                fill(p.color);
+                ellipse(p.px - 6, p.py - 2, 6, 6);
+                ellipse(p.px + 10, p.py - 2, 6, 6);
+
+                //pupil
+                fill(0);
+                ellipse(p.px - 6, p.py - 2, 4, 4);
+                ellipse(p.px + 10, p.py - 2, 4, 4);
+           }
+    //        //set eyes to static
+           else{
+               p.dir = 0;
+           }
+       }
         // image(p.sprite,p.px,p.py,50,50);
         // console.log(p.sprite);
     }
@@ -503,6 +654,8 @@ function controls(){
     if(my.vx < 0 && my.px > 50){
         my.px += my.vx;
     }
+
+    //my.px = (my.px + width) % width; //for exits
     
     //right wall
     if(my.vx > 0 && my.px < 1035){
@@ -521,38 +674,42 @@ function controls(){
 
     my.vx = 0;
     my.vy = 0;
+
     //Up arrow or W
-    //vertical collision - make velocity 0
     if(keyIsDown(UP_ARROW) || keyIsDown(87)){
-        // if(my.selectedTeam == "Pac-man"){
             my.vx = 0;
             my.vy = -my.vel * my.speed;
             my.dir = 1;
-        // }
+      if(my.color == "yellow"){
+          chomping.play();
+      }
     }
     //down arrow or S
     if(keyIsDown(DOWN_ARROW) || keyIsDown(83)){
-        // if(my.selectedTeam == "Pac-man"){
             my.vx = 0;
             my.vy = my.vel * my.speed;
             my.dir = 2;
-        // }
+        if(my.color == "yellow"){
+            chomping.play();
+        }
     }
     //left arrow & A
     if(keyIsDown(LEFT_ARROW) || keyIsDown(65)){
-        // if(my.selectedTeam == "Pac-man"){
             my.vx = -my.vel * my.speed;
             my.vy = 0;
             my.dir = 3;
-        // }
+        if(my.color == "yellow"){
+            chomping.play();
+        }
     }
     //right arrow or D
     if(keyIsDown(RIGHT_ARROW) || keyIsDown(68)){
-        // if(my.selectedTeam == "Pac-man"){
             my.vx = my.vel * my.speed;
             my.vy = 0;
             my.dir = 4;
-        // }
+        if(my.color == "yellow"){
+            chomping.play();
+        }
     }
 }
 
