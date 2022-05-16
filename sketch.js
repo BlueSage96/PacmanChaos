@@ -29,7 +29,7 @@ let purpleGhostArray = [];
 function preload(){
     partyConnect(
         "wss://deepstream-server-1.herokuapp.com",
-        "Pacman_Chaos_Test7",
+        "Pacman_Chaos",
         "main1"
       );
     shared = partyLoadShared("globals");
