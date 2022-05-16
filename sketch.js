@@ -254,7 +254,7 @@ function scoreBoard(){
     clydeScoreText.parent(scoreBoard);
 
     //purple ghost
-    let winkyScoreText = createElement("h3","Winky: " + my.winkyScore);
+    let winkyScoreText = createElement("h3","Pinky: " + my.winkyScore);
     winkyScoreText.parent(scoreBoard);
 }
 
