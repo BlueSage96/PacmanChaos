@@ -29,7 +29,7 @@ let purpleGhostArray = [];
 function preload(){
     partyConnect(
         "wss://deepstream-server-1.herokuapp.com",
-        "Pacman_Chaos",
+        "Pacman_Chaos_Test7",
         "main1"
       );
     shared = partyLoadShared("globals");
@@ -86,6 +86,8 @@ function setup(){
     marginVert = Math.floor((width - col * size) / 2);
     marginHori = Math.floor((height - row * size) / 2);
 
+    setInterval(againstTheClock,900);
+
     //change colors - or make them random
     obstacles = color(50,0,200);
     borders = color(80,60,200);
@@ -134,7 +136,8 @@ function setup(){
     my.blinkyScore  = 0;
     my.inkyScore = 0;
     my.clydeScore = 0;
-    my.winkyScore = 0;
+    my.pinkyScore = 0;
+    my.countdown = 10;
 
     if(participants.length == 1){
       my.color = "yellow";
@@ -232,6 +235,19 @@ function buttonHighlight(){
 
 }
 
+//timer
+function againstTheClock(){
+    if(scene == 2){
+      if(my.countdown > 0){
+        my.countdown--;
+      }
+    
+      else if(my.countdown <= 0){
+        scene = 3;
+      }
+    }
+  }
+
 function scoreBoard(){
     let scoreBoard = createDiv("Score Board");
     scoreBoard.id("scoreBoard");
@@ -254,7 +270,7 @@ function scoreBoard(){
     clydeScoreText.parent(scoreBoard);
 
     //purple ghost
-    let winkyScoreText = createElement("h3","Pinky: " + my.winkyScore);
+    let winkyScoreText = createElement("h3","Pinky: " + my.pinkyScore);
     winkyScoreText.parent(scoreBoard);
 }
 
@@ -264,6 +280,14 @@ function game(){
     // tokens();
     drawPlayers();
     controls();
+    if(my.countdown <= 10){
+        fill(255,0,0);
+        text("Time: " + my.countdown,50,50);
+      }
+      else{
+        fill(0);
+        text("Time: " + my.countdown,50,50);
+      }
     // if(shared.gameState === "PLAYING"){
     //     game();
     // }
@@ -284,8 +308,18 @@ function gameOver(){
     textAlign(CENTER);
     text("Game Over!", width/2,300);
 
+    if(my.pacScore > my.blinkyScore || my.pacScore > my.inkyScore || my.pacScore > my.clydeScore || my.pacScore > my.pinkyScore){
+        text("Pacman wins! ", width/2, 500);
+        text("The ghosts lose!", width/2,700);
+    }
+
+    if(my.pacScore < my.blinkyScore || my.pacScore < my.inkyScore || my.pacScore < my.clydeScore || my.pacScore < my.pinkyScore){
+        text("Pacman loses! ", width/2, 500);
+        text("The ghosts win!", width/2,700);
+    }
+
     if(partyIsHost()){
-        text("Press R to restart",width/2,500);
+        text("Press R to restart",width/2,800);
         shared.hostRestart = false;
 
         if(keyCode == 82){
@@ -295,7 +329,7 @@ function gameOver(){
         }
     }
     else if(!partyIsHost()){
-        text("Wait for the host to restart", width/2, 500);
+        text("Wait for the host to restart", width/2, 800);
         if(shared.hostRestart == true){
             scene = 1;
         }
@@ -323,32 +357,32 @@ function collisionDetection(){
     for (const p2 of participants) {
       if (p1 === p2) continue;
         if (dist(p1.px, p1.py, p2.px, p2.py) < 20) {
-            if(p1.color == "yellow" && my.playerMoving == true){
+            if(p1.color == "yellow" ){
                 my.pacScore++;
             }
-            if(p2.color == "red" && my.playerMoving == true){
+            if(p2.color == "red" ){
                 my.blinkyScore++;
             }
 
-            if(p2.color == "blue" && my.playerMoving == true){
+            if(p2.color == "blue" ){
                my.inkyScore++; 
             }
 
-            if( p2.color == "green" && my.playerMoving == true){
+            if( p2.color == "green" ){
                 my.clydeScore++;
             }
 
-            if(p2.color == "purple" && my.playerMoving == true){
-                my.winkyScore++;
+            if(p2.color == "purple" ){
+                my.pinkyScore++;
             }
 
-            else if(playerMoving == false){
-                my.pacScore = 0;
-                my.blinkyScore = 0;
-                my.inkyScore = 0;
-                my.clydeScore = 0;
-                my.winkyScore = 0;
-            }
+            // else if(my.playerMoving == false){
+            //     my.pacScore = 0;
+            //     my.blinkyScore = 0;
+            //     my.inkyScore = 0;
+            //     my.clydeScore = 0;
+            //     my.pinkyScore = 0;
+            // }
         }
 
     }
@@ -640,9 +674,9 @@ function drawPlayers(){
                 ellipse(p.px + 10, p.py - 2, 4, 4);
            }
     //        //set eyes to static
-           else{
-               p.dir = 0;
-           }
+        //    else{
+        //        p.dir = 0;
+        //    }
        }
         // image(p.sprite,p.px,p.py,50,50);
         // console.log(p.sprite);
@@ -680,36 +714,36 @@ function controls(){
             my.vx = 0;
             my.vy = -my.vel * my.speed;
             my.dir = 1;
-      if(my.color == "yellow"){
-          chomping.play();
-      }
+    //   if(my.color == "yellow"){
+    //       chomping.play();
+    //   }
     }
     //down arrow or S
     if(keyIsDown(DOWN_ARROW) || keyIsDown(83)){
             my.vx = 0;
             my.vy = my.vel * my.speed;
             my.dir = 2;
-        if(my.color == "yellow"){
-            chomping.play();
-        }
+        // if(my.color == "yellow"){
+        //     chomping.play();
+        // }
     }
     //left arrow & A
     if(keyIsDown(LEFT_ARROW) || keyIsDown(65)){
             my.vx = -my.vel * my.speed;
             my.vy = 0;
             my.dir = 3;
-        if(my.color == "yellow"){
-            chomping.play();
-        }
+        // if(my.color == "yellow"){
+        //     chomping.play();
+        // }
     }
     //right arrow or D
     if(keyIsDown(RIGHT_ARROW) || keyIsDown(68)){
             my.vx = my.vel * my.speed;
             my.vy = 0;
             my.dir = 4;
-        if(my.color == "yellow"){
-            chomping.play();
-        }
+        // if(my.color == "yellow"){
+        //     chomping.play();
+        // }
     }
 }
 
