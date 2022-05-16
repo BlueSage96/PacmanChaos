@@ -318,6 +318,11 @@ function gameOver(){
         text("The ghosts win!", width/2,700);
     }
 
+    if(my.pacScore == my.blinkyScore || my.pacScore == my.inkyScore || my.pacScore == my.clydeScore || my.pacScore == my.pinkyScore){
+        text("It's a tie! ", width/2, 500);
+        // text("The ghosts win!", width/2,700);
+    }
+
     if(partyIsHost()){
         text("Press R to restart",width/2,800);
         shared.hostRestart = false;
