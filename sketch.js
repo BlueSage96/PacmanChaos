@@ -29,46 +29,46 @@ let purpleGhostArray = [];
 function preload(){
     partyConnect(
         "wss://deepstream-server-1.herokuapp.com",
-        "Pacman_Chaos",
+        "Pacman_Chaos_Test10",
         "main1"
       );
     shared = partyLoadShared("globals");
     my = partyLoadMyShared();//object in participants array
     participants = partyLoadParticipantShareds();
     //sounds
-    chomping = loadSound("assets/WakaWaka.wav");
+   // chomping = loadSound("assets/Sounds/pacman_chomp.wav");
     //images
     titleBackground = loadImage("assets/titleScreen.png");
     paused = loadImage("assets/PausedScreen.png");
 
     //sprites
-    redGhostArray[0] = loadImage("assets/RedGhostStatic.png");
-    redGhostArray[1] = loadImage("assets/RedGhostLeft.png");
-    redGhostArray[2] = loadImage("assets/RedGhostRight.png");
-    redGhostArray[3] = loadImage("assets/RedGhostUp.png");
-    redGhostArray[4] = loadImage("assets/RedGhostDown.png");
-    redGhostArray[5] = loadImage("assets/RedGhostDead.png");
+    // redGhostArray[0] = loadImage("assets/RedGhostStatic.png");
+    // redGhostArray[1] = loadImage("assets/RedGhostLeft.png");
+    // redGhostArray[2] = loadImage("assets/RedGhostRight.png");
+    // redGhostArray[3] = loadImage("assets/RedGhostUp.png");
+    // redGhostArray[4] = loadImage("assets/RedGhostDown.png");
+    // redGhostArray[5] = loadImage("assets/RedGhostDead.png");
 
-    blueGhostArray[0] = loadImage("assets/BlueGhostStatic.png");
-    blueGhostArray[1] = loadImage("assets/BlueGhostLeft.png");
-    blueGhostArray[2] = loadImage("assets/BlueGhostRight.png");
-    blueGhostArray[3] = loadImage("assets/BlueGhostUp.png");
-    blueGhostArray[4] = loadImage("assets/BlueGhostDown.png");
-    blueGhostArray[5] = loadImage("assets/BlueGhostDead.png");
+    // blueGhostArray[0] = loadImage("assets/BlueGhostStatic.png");
+    // blueGhostArray[1] = loadImage("assets/BlueGhostLeft.png");
+    // blueGhostArray[2] = loadImage("assets/BlueGhostRight.png");
+    // blueGhostArray[3] = loadImage("assets/BlueGhostUp.png");
+    // blueGhostArray[4] = loadImage("assets/BlueGhostDown.png");
+    // blueGhostArray[5] = loadImage("assets/BlueGhostDead.png");
 
-    greenGhostArray[0] = loadImage("assets/GreenGhostStatic.png");
-    greenGhostArray[1] = loadImage("assets/GreenGhostLeft.png");
-    greenGhostArray[2] = loadImage("assets/GreenGhostRight.png");
-    greenGhostArray[3] = loadImage("assets/GreenGhostUp.png");
-    greenGhostArray[4] = loadImage("assets/GreenGhostDown.png");
-    greenGhostArray[5] = loadImage("assets/GreenGhostDead.png");
+    // greenGhostArray[0] = loadImage("assets/GreenGhostStatic.png");
+    // greenGhostArray[1] = loadImage("assets/GreenGhostLeft.png");
+    // greenGhostArray[2] = loadImage("assets/GreenGhostRight.png");
+    // greenGhostArray[3] = loadImage("assets/GreenGhostUp.png");
+    // greenGhostArray[4] = loadImage("assets/GreenGhostDown.png");
+    // greenGhostArray[5] = loadImage("assets/GreenGhostDead.png");
 
-    purpleGhostArray[0] = loadImage("assets/PurpleGhostStatic.png");
-    purpleGhostArray[1] = loadImage("assets/PurpleGhostLeft.png");
-    purpleGhostArray[2] = loadImage("assets/PurpleGhostRight.png");
-    purpleGhostArray[3] = loadImage("assets/PurpleGhostUp.png");
-    purpleGhostArray[4] = loadImage("assets/PurpleGhostDown.png");
-    purpleGhostArray[5] = loadImage("assets/PurpleGhostDead.png");
+    // purpleGhostArray[0] = loadImage("assets/PurpleGhostStatic.png");
+    // purpleGhostArray[1] = loadImage("assets/PurpleGhostLeft.png");
+    // purpleGhostArray[2] = loadImage("assets/PurpleGhostRight.png");
+    // purpleGhostArray[3] = loadImage("assets/PurpleGhostUp.png");
+    // purpleGhostArray[4] = loadImage("assets/PurpleGhostDown.png");
+    // purpleGhostArray[5] = loadImage("assets/PurpleGhostDead.png");
 
      //Font
      pacmanFont = loadFont("assets/crackman.TTF");
@@ -98,7 +98,7 @@ function setup(){
     greenCol = color(0,255,0);
     purpleCol = color(255,0,255);
 
-    chomping.setVolume(0.015);
+    //chomping.setVolume(0.015);
     link = createA("instructions.html","");
 
     instructions = createImg("assets/icon.png","instructions.html").parent(link);
@@ -137,7 +137,7 @@ function setup(){
     my.inkyScore = 0;
     my.clydeScore = 0;
     my.pinkyScore = 0;
-    my.countdown = 10;
+    my.countdown = 60;
 
     if(participants.length == 1){
       my.color = "yellow";
@@ -210,7 +210,7 @@ function startScreen(){
         text("Start Game",350,750);
     }
 
-   //buttonHighlight();
+   buttonHighlight();
 }
 
 function waitForHost(){
@@ -232,7 +232,10 @@ function waitForHost(){
 }
 
 function buttonHighlight(){
-
+    fill(pacmanCol);
+    if(scene == 0 && mouseX < 800 && mouseX > 350 && mouseY < 750 && mouseY > 700){
+        text("Start Game",350,750);
+    }
 }
 
 //timer
@@ -306,25 +309,25 @@ function gameOver(){
     fill(255,0,0);
     textSize(40);
     textAlign(CENTER);
-    text("Game Over!", width/2,300);
+    text("Game Over!", 300,300);
 
     if(my.pacScore > my.blinkyScore || my.pacScore > my.inkyScore || my.pacScore > my.clydeScore || my.pacScore > my.pinkyScore){
-        text("Pacman wins! ", width/2, 500);
-        text("The ghosts lose!", width/2,700);
+        text("Pacman wins! ", 300, 500);
+        text("The ghosts lose!", 300,700);
     }
 
     if(my.pacScore < my.blinkyScore || my.pacScore < my.inkyScore || my.pacScore < my.clydeScore || my.pacScore < my.pinkyScore){
-        text("Pacman loses! ", width/2, 500);
-        text("The ghosts win!", width/2,700);
+        text("Pacman loses! ", 300, 500);
+        text("The ghosts win!", 300,700);
     }
 
     if(my.pacScore == my.blinkyScore || my.pacScore == my.inkyScore || my.pacScore == my.clydeScore || my.pacScore == my.pinkyScore){
-        text("It's a tie! ", width/2, 500);
+        text("It's a tie! ", 300, 500);
         // text("The ghosts win!", width/2,700);
     }
 
     if(partyIsHost()){
-        text("Press R to restart",width/2,800);
+        text("Press R to restart",300,800);
         shared.hostRestart = false;
 
         if(keyCode == 82){
@@ -334,7 +337,7 @@ function gameOver(){
         }
     }
     else if(!partyIsHost()){
-        text("Wait for the host to restart", width/2, 800);
+        text("Wait for the host to restart",300, 800);
         if(shared.hostRestart == true){
             scene = 1;
         }
@@ -362,7 +365,8 @@ function collisionDetection(){
     for (const p2 of participants) {
       if (p1 === p2) continue;
         if (dist(p1.px, p1.py, p2.px, p2.py) < 20) {
-            if(p1.color == "yellow" ){
+            //try p1.px < p2.px
+            if(p1.px > p2.px){
                 my.pacScore++;
             }
             if(p2.color == "red" ){
@@ -541,14 +545,12 @@ function drawPlayers(){
         if(p.color == "yellow"){
             p.theta = PI / 3 * sq(sin(p.thetaOff));//chomping
             p.thetaOff += 0.1;
-            // chomping.play();
             //stationary
             if(p.dir == 0){
                 arc(p.px,p.py,p.w,p.h,p.theta,-p.theta);
                 //eyes
                 fill(0);
                 ellipse(p.px,p.py-12,10,10);
-                // chomping.stop();
             }
 
             //up
@@ -556,7 +558,6 @@ function drawPlayers(){
                 arc(p.px,p.py,p.w,p.h,-p.theta - PI / 6, p.theta + 7 * PI / 6);
                 fill(0);
                 ellipse(p.px - 12, p.py,10,10);
-                // chomping.play();
             }
 
             //down
@@ -565,7 +566,6 @@ function drawPlayers(){
                 //eyes
                 fill(0);
                 ellipse(p.px+12,p.py,10,10); 
-                // chomping.play();
             }
 
             //left
@@ -574,7 +574,6 @@ function drawPlayers(){
                 //eyes
                 fill(0);
                 ellipse(p.px,p.py-12, 10,10);
-                // chomping.play();
             }
 
             //right
@@ -583,7 +582,6 @@ function drawPlayers(){
                 //eyes
                 fill(0);
                 ellipse(p.px,p.py-12,10,10);  
-                // chomping.play();
             }
        }
 
@@ -679,9 +677,9 @@ function drawPlayers(){
                 ellipse(p.px + 10, p.py - 2, 4, 4);
            }
     //        //set eyes to static
-        //    else{
-        //        p.dir = 0;
-        //    }
+           else{
+               p.dir = 0;
+           }
        }
         // image(p.sprite,p.px,p.py,50,50);
         // console.log(p.sprite);

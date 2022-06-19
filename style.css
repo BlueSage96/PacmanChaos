@@ -25,7 +25,7 @@ html, body {
   body{
     background-image: url("assets/background.jpg");
     background-repeat: no-repeat;
-    /* overflow: hidden; */
+    overflow: hidden;
     zoom: 100%;
     zoom: normal;
   }
