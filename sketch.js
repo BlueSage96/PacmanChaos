@@ -36,7 +36,7 @@ function preload(){
     my = partyLoadMyShared();//object in participants array
     participants = partyLoadParticipantShareds();
     //sounds
-   // chomping = loadSound("assets/Sounds/pacman_chomp.wav");
+   chomping = loadSound("assets/Sounds/pacman_chomp.wav");
     //images
     titleBackground = loadImage("assets/titleScreen.png");
     paused = loadImage("assets/PausedScreen.png");
@@ -86,7 +86,7 @@ function setup(){
     marginVert = Math.floor((width - col * size) / 2);
     marginHori = Math.floor((height - row * size) / 2);
 
-    setInterval(againstTheClock,900);
+    // setInterval(againstTheClock,900);
 
     //change colors - or make them random
     obstacles = color(50,0,200);
@@ -98,7 +98,7 @@ function setup(){
     greenCol = color(0,255,0);
     purpleCol = color(255,0,255);
 
-    //chomping.setVolume(0.015);
+    chomping.setVolume(0.015);
     link = createA("instructions.html","");
 
     instructions = createImg("assets/icon.png","instructions.html").parent(link);
@@ -239,17 +239,17 @@ function buttonHighlight(){
 }
 
 //timer
-function againstTheClock(){
-    if(scene == 2){
-      if(my.countdown > 0){
-        my.countdown--;
-      }
+// function againstTheClock(){
+//     if(scene == 2){
+//       if(my.countdown > 0){
+//         my.countdown--;
+//       }
     
-      else if(my.countdown <= 0){
-        scene = 3;
-      }
-    }
-  }
+//       else if(my.countdown <= 0){
+//         scene = 3;
+//       }
+//     }
+//   }
 
 function scoreBoard(){
     let scoreBoard = createDiv("Score Board");
@@ -485,12 +485,13 @@ function tokens(){
             //see if walls x & y is the same as the create walls
            //loop through walls and see if
            //only create eggs if there is not a wall in location - centerX, centerY
-            // if(dist(cx,cy,createWalls[i][0],createWalls[i][1]) > 10){
-            // if(cx >= createWalls[i][0]){
-            //     fill(ballCol);
-            //     ellipse(cx,cy,25,25);
-            // }
-            // eggs.push([cx,cy]);
+            if(dist(cx,cy,createWalls[i][0],createWalls[i][1]) > 10){
+                if(cx >= createWalls[i][0]){
+                    fill(ballCol);
+                    ellipse(cx,cy,25,25);
+                }
+                eggs.push([cx,cy]);
+            }
           }
        }
     }
@@ -717,36 +718,36 @@ function controls(){
             my.vx = 0;
             my.vy = -my.vel * my.speed;
             my.dir = 1;
-    //   if(my.color == "yellow"){
-    //       chomping.play();
-    //   }
+      if(my.color == "yellow"){
+        //   chomping.play();
+      }
     }
     //down arrow or S
     if(keyIsDown(DOWN_ARROW) || keyIsDown(83)){
             my.vx = 0;
             my.vy = my.vel * my.speed;
             my.dir = 2;
-        // if(my.color == "yellow"){
-        //     chomping.play();
-        // }
+        if(my.color == "yellow"){
+            // chomping.play();
+        }
     }
     //left arrow & A
     if(keyIsDown(LEFT_ARROW) || keyIsDown(65)){
             my.vx = -my.vel * my.speed;
             my.vy = 0;
             my.dir = 3;
-        // if(my.color == "yellow"){
-        //     chomping.play();
-        // }
+        if(my.color == "yellow"){
+            // chomping.play();
+        }
     }
     //right arrow or D
     if(keyIsDown(RIGHT_ARROW) || keyIsDown(68)){
             my.vx = my.vel * my.speed;
             my.vy = 0;
             my.dir = 4;
-        // if(my.color == "yellow"){
-        //     chomping.play();
-        // }
+        if(my.color == "yellow"){
+            // chomping.play();
+        }
     }
 }
 
