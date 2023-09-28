@@ -1,4 +1,4 @@
-let my,shared,pacmanFont;
+let my,shared,participants,pacmanFont;
 let marginVert,marginHori,col,row;
 let obstacles, borders, ballCol,pacmanCol,redCol,blueCol,greenCol,purpleCol;
 let chomping;
@@ -28,7 +28,8 @@ let purpleGhostArray = [];
 
 function preload(){
     partyConnect(
-        "https://main--pacmanchaos.netlify.app",
+        //"https://main--pacmanchaos.netlify.app",
+        "https://pacmanchaos.netlify.app",
         "Pacman_Chaos_Test10",
         "main1"
       );
