@@ -1,0 +1,28 @@
+//sprites
+    // redGhostArray[0] = loadImage("assets/RedGhostStatic.png");
+    // redGhostArray[1] = loadImage("assets/RedGhostLeft.png");
+    // redGhostArray[2] = loadImage("assets/RedGhostRight.png");
+    // redGhostArray[3] = loadImage("assets/RedGhostUp.png");
+    // redGhostArray[4] = loadImage("assets/RedGhostDown.png");
+    // redGhostArray[5] = loadImage("assets/RedGhostDead.png");
+
+    // blueGhostArray[0] = loadImage("assets/BlueGhostStatic.png");
+    // blueGhostArray[1] = loadImage("assets/BlueGhostLeft.png");
+    // blueGhostArray[2] = loadImage("assets/BlueGhostRight.png");
+    // blueGhostArray[3] = loadImage("assets/BlueGhostUp.png");
+    // blueGhostArray[4] = loadImage("assets/BlueGhostDown.png");
+    // blueGhostArray[5] = loadImage("assets/BlueGhostDead.png");
+
+    // greenGhostArray[0] = loadImage("assets/GreenGhostStatic.png");
+    // greenGhostArray[1] = loadImage("assets/GreenGhostLeft.png");
+    // greenGhostArray[2] = loadImage("assets/GreenGhostRight.png");
+    // greenGhostArray[3] = loadImage("assets/GreenGhostUp.png");
+    // greenGhostArray[4] = loadImage("assets/GreenGhostDown.png");
+    // greenGhostArray[5] = loadImage("assets/GreenGhostDead.png");
+
+    // purpleGhostArray[0] = loadImage("assets/PurpleGhostStatic.png");
+    // purpleGhostArray[1] = loadImage("assets/PurpleGhostLeft.png");
+    // purpleGhostArray[2] = loadImage("assets/PurpleGhostRight.png");
+    // purpleGhostArray[3] = loadImage("assets/PurpleGhostUp.png");
+    // purpleGhostArray[4] = loadImage("assets/PurpleGhostDown.png");
+    // purpleGhostArray[5] = loadImage("assets/PurpleGhostDead.png");

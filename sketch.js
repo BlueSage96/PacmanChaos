@@ -28,7 +28,7 @@ let purpleGhostArray = [];
 
 function preload(){
     partyConnect(
-        "wss://deepstream-server-1.herokuapp.com",
+        "https://main--pacmanchaos.netlify.app",
         "Pacman_Chaos_Test10",
         "main1"
       );
@@ -36,39 +36,10 @@ function preload(){
     my = partyLoadMyShared();//object in participants array
     participants = partyLoadParticipantShareds();
     //sounds
-   // chomping = loadSound("assets/Sounds/pacman_chomp.wav");
+   chomping = loadSound("assets/Sounds/pacman_chomp.wav");
     //images
     titleBackground = loadImage("assets/titleScreen.png");
     paused = loadImage("assets/PausedScreen.png");
-
-    //sprites
-    // redGhostArray[0] = loadImage("assets/RedGhostStatic.png");
-    // redGhostArray[1] = loadImage("assets/RedGhostLeft.png");
-    // redGhostArray[2] = loadImage("assets/RedGhostRight.png");
-    // redGhostArray[3] = loadImage("assets/RedGhostUp.png");
-    // redGhostArray[4] = loadImage("assets/RedGhostDown.png");
-    // redGhostArray[5] = loadImage("assets/RedGhostDead.png");
-
-    // blueGhostArray[0] = loadImage("assets/BlueGhostStatic.png");
-    // blueGhostArray[1] = loadImage("assets/BlueGhostLeft.png");
-    // blueGhostArray[2] = loadImage("assets/BlueGhostRight.png");
-    // blueGhostArray[3] = loadImage("assets/BlueGhostUp.png");
-    // blueGhostArray[4] = loadImage("assets/BlueGhostDown.png");
-    // blueGhostArray[5] = loadImage("assets/BlueGhostDead.png");
-
-    // greenGhostArray[0] = loadImage("assets/GreenGhostStatic.png");
-    // greenGhostArray[1] = loadImage("assets/GreenGhostLeft.png");
-    // greenGhostArray[2] = loadImage("assets/GreenGhostRight.png");
-    // greenGhostArray[3] = loadImage("assets/GreenGhostUp.png");
-    // greenGhostArray[4] = loadImage("assets/GreenGhostDown.png");
-    // greenGhostArray[5] = loadImage("assets/GreenGhostDead.png");
-
-    // purpleGhostArray[0] = loadImage("assets/PurpleGhostStatic.png");
-    // purpleGhostArray[1] = loadImage("assets/PurpleGhostLeft.png");
-    // purpleGhostArray[2] = loadImage("assets/PurpleGhostRight.png");
-    // purpleGhostArray[3] = loadImage("assets/PurpleGhostUp.png");
-    // purpleGhostArray[4] = loadImage("assets/PurpleGhostDown.png");
-    // purpleGhostArray[5] = loadImage("assets/PurpleGhostDead.png");
 
      //Font
      pacmanFont = loadFont("assets/crackman.TTF");
@@ -86,7 +57,7 @@ function setup(){
     marginVert = Math.floor((width - col * size) / 2);
     marginHori = Math.floor((height - row * size) / 2);
 
-    setInterval(againstTheClock,900);
+    // setInterval(againstTheClock,900);
 
     //change colors - or make them random
     obstacles = color(50,0,200);
@@ -98,7 +69,7 @@ function setup(){
     greenCol = color(0,255,0);
     purpleCol = color(255,0,255);
 
-    //chomping.setVolume(0.015);
+    chomping.setVolume(0.015);
     link = createA("instructions.html","");
 
     instructions = createImg("assets/icon.png","instructions.html").parent(link);
@@ -119,6 +90,8 @@ function setup(){
     }
     /*using participants solves issues with players being able 
     to control the same player at once*/
+
+    //pacman
     my.w = 60;
     my.h = 60;
     my.vx = 0;
@@ -131,6 +104,19 @@ function setup(){
     my.thetaOff = 0;
     my.theta = 0;
     my.playerMoving = false;
+
+    //red
+    my.rw = 60;
+    my.rh = 60;
+    my.rvx = 0;
+    my.rvy =  0;
+    my.rSpeed = 5;
+    my.rSpeedX = 0;
+    my.rSpeedY = 0;
+    my.rDir = 0;
+    my.rVel = 1;
+    my.rThetaOff = 0;
+    my.rTheta = 0;
 
     my.pacScore = 0;
     my.blinkyScore  = 0;
@@ -146,8 +132,8 @@ function setup(){
     }
     if(participants.length == 2){
       my.color = "red";
-      my.px = ghostCenterX(5);
-      my.py = ghostCenterY(4);
+      my.rpx = ghostCenterX(5);
+      my.rpy = ghostCenterY(4);
     }
     if(participants.length == 3){
         my.color = "blue";
@@ -239,17 +225,17 @@ function buttonHighlight(){
 }
 
 //timer
-function againstTheClock(){
-    if(scene == 2){
-      if(my.countdown > 0){
-        my.countdown--;
-      }
+// function againstTheClock(){
+//     if(scene == 2){
+//       if(my.countdown > 0){
+//         my.countdown--;
+//       }
     
-      else if(my.countdown <= 0){
-        scene = 3;
-      }
-    }
-  }
+//       else if(my.countdown <= 0){
+//         scene = 3;
+//       }
+//     }
+//   }
 
 function scoreBoard(){
     let scoreBoard = createDiv("Score Board");
@@ -485,12 +471,13 @@ function tokens(){
             //see if walls x & y is the same as the create walls
            //loop through walls and see if
            //only create eggs if there is not a wall in location - centerX, centerY
-            // if(dist(cx,cy,createWalls[i][0],createWalls[i][1]) > 10){
-            // if(cx >= createWalls[i][0]){
-            //     fill(ballCol);
-            //     ellipse(cx,cy,25,25);
-            // }
-            // eggs.push([cx,cy]);
+            if(dist(cx,cy,createWalls[i][0],createWalls[i][1]) > 10){
+                if(cx >= createWalls[i][0]){
+                    fill(ballCol);
+                    ellipse(cx,cy,25,25);
+                }
+                eggs.push([cx,cy]);
+            }
           }
        }
     }
@@ -717,36 +704,36 @@ function controls(){
             my.vx = 0;
             my.vy = -my.vel * my.speed;
             my.dir = 1;
-    //   if(my.color == "yellow"){
-    //       chomping.play();
-    //   }
+      if(my.color == "yellow"){
+        //   chomping.play();
+      }
     }
     //down arrow or S
     if(keyIsDown(DOWN_ARROW) || keyIsDown(83)){
             my.vx = 0;
             my.vy = my.vel * my.speed;
             my.dir = 2;
-        // if(my.color == "yellow"){
-        //     chomping.play();
-        // }
+        if(my.color == "yellow"){
+            // chomping.play();
+        }
     }
     //left arrow & A
     if(keyIsDown(LEFT_ARROW) || keyIsDown(65)){
             my.vx = -my.vel * my.speed;
             my.vy = 0;
             my.dir = 3;
-        // if(my.color == "yellow"){
-        //     chomping.play();
-        // }
+        if(my.color == "yellow"){
+            // chomping.play();
+        }
     }
     //right arrow or D
     if(keyIsDown(RIGHT_ARROW) || keyIsDown(68)){
             my.vx = my.vel * my.speed;
             my.vy = 0;
             my.dir = 4;
-        // if(my.color == "yellow"){
-        //     chomping.play();
-        // }
+        if(my.color == "yellow"){
+            // chomping.play();
+        }
     }
 }
 
