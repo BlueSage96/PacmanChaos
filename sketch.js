@@ -28,9 +28,8 @@ let purpleGhostArray = [];
 
 function preload(){
     partyConnect(
-        //"https://main--pacmanchaos.netlify.app",
-        "https://pacmanchaos.netlify.app",
-        "Pacman_Chaos_Test10",
+        "wss://deepstream-server-1.herokuapp.com",
+        "Pacman_Chaos_Debug",
         "main1"
       );
     shared = partyLoadShared("globals");
