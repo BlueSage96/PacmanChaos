@@ -1,42 +1,48 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/addons/p5.sound.min.js"></script>
-    <!-- <script src="https://cdn.jsdelivr.net/npm/p5.party@1.0.0/dist/p5.party.js"></script> -->
-    
-    <!-- Stable version that supports features from class -->
-    <script src="https://cdn.jsdelivr.net/npm/p5.party@0.7.0/dist/p5.party.js"></script>
-      <!-- <script src="https://cdn.jsdelivr.net/npm/p5.party@latest/dist/p5.party.js"></script> -->
-    <link rel="stylesheet" type="text/css" href="style.css">
-    <meta charset="utf-8" />
 
-  </head>
-  <body>
-    <!-- For Chrome -->
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js">
-    </script>  <script type="text/javascript" charset="utf-8">
-    $(function() { $('body').hide().show(); });
-    </script>
-      <!-- <h1 id="title"><span>Pacman: Chaos</span></h1> -->
-      <button id="toggle" onmousedown="partyToggleInfo()" type="button">Toggle Info</button>
-      <button id="kit" type="button"><a href="https://www.notion.so/Pac-man-Chaos-Press-Kit-6e8e30e1ec7943698136b8e787652423">Press Kit</a></button>
-      <!-- <button id="instructionsButton" type="button"><a href="instructions.html">Instructions</a></button> -->
-      <button id="original" type="button"><a href="https://www.google.com/logos/2010/pacman10-i.html">Original</a></button>
+<head>
+  <!-- Used to be 1.4.0 -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.11.3/p5.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/addons/p5.sound.min.js"></script> 
+  <!-- <script src="https://cdn.jsdelivr.net/npm/p5@1.11.3/lib/p5.min.js"></script> -->
 
-      <!-- <div id="scoreBoard"><h3>Score Board</h3></div> -->
-    
-    <script src="sketch.js"></script>
-    <script src="client.js"></script>
-    <script src="server.js"></script>
-    <!-- <script src="js/pacman.js"></script>
-    <script src="js/ghosts.js"></script> -->
-    <div class="flexbox">
-        <div id="canvasdiv"></div>
-    </div>
-   <div id="rights">
-    This is a student project and an adaption of the original game into a multiplayer. 
+  <!--Newest p5.js version doesn't work with old p5.party-->
+ <!-- <script src="https://cdn.jsdelivr.net/npm/p5@latest/lib/p5.js"></script> -->
+ 
+  <!-- Stable version that supports features from class read newest docs before using latest version-->
+  <script src="https://cdn.jsdelivr.net/npm/p5.party@0.7.0/dist/p5.party.js"></script>
+  <!-- <script src="https://cdn.jsdelivr.net/npm/p5.party@latest/dist/p5.party.js"></script>-->
+  <link rel="stylesheet" type="text/css" href="style.css">
+  <meta charset="utf-8" />
+
+</head>
+
+<body>
+  <!-- For Chrome -->
+  <!-- <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js">
+  </script> -->
+  <script type="text/javascript" charset="utf-8">
+    //$(function () { $('body').hide().show(); });
+  </script>
+  <h1 id="title"><span>Pacman: Chaos</span></h1>
+  <button id="toggle" onmousedown="partyToggleInfo()" type="button">Toggle Info</button>
+  <button id="kit" type="button"><a
+      href="https://www.notion.so/Pac-man-Chaos-Press-Kit-6e8e30e1ec7943698136b8e787652423">Press Kit</a></button>
+  <button id="instructionsButton" type="button"><a href="instructions.html">Instructions</a></button>
+  <button id="original" type="button"><a href="https://www.google.com/logos/2010/pacman10-i.html">Original</a></button>
+
+  <!-- <div id="scoreBoard"><h3>Score Board</h3></div> -->
+
+  <script src="sketch.js"></script>
+
+  <div class="flexbox">
+    <div id="canvasdiv"></div>
+  </div>
+  <div id="rights">
+    This is a student project and an adaption of the original game into a multiplayer.
     All rights belong to Bandai Namco.
-   </div>
-  </body>
+  </div>
+</body>
+
 </html>
